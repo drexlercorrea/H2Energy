@@ -1,0 +1,197 @@
+body {
+  margin: 0px;
+}
+
+.cabeçalho {
+  display: grid;
+  grid-template-columns: 150px 100%;
+}
+
+.logo {
+  width: 100px;
+  padding: 10px;
+  grid-row: 1;
+}
+
+.h2App {
+  margin: 0px;
+  justify-self: right;
+  align-self: center;
+  position: absolute;
+  width: 80px;
+  padding: 10px;
+}
+
+.nav {
+  background-color: rgba(0, 150, 255, 100%);
+}
+
+.nav a {
+  text-decoration: none;
+  color: white;
+  font-size: 18px;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+}
+
+.nav ul {
+  margin: 0px;
+  padding: 0px 10px;
+}
+
+.nav li {
+  display: inline-block;
+  padding: 10px;
+}
+
+.botãoNovoprojeto {
+  display: grid;
+  grid-template-columns: 179.3px 1fr;
+}
+
+.novoProjeto {
+  margin: 30px 10px 10px 10px;
+  padding: 10px 30px;
+  background-color: rgba(0, 150, 255, 100%);
+  border-radius: 4px;
+  border-color: rgba(0, 150, 255, 100%);
+  border-width: 2px;
+  color: white;
+  font-size: 16px;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  cursor: pointer;
+}
+
+.fa-caret-down {
+  justify-self: left;
+  align-self: end;
+  margin: 0px 0px 15px -30px;
+  color: white;
+  font-size: 80%;
+}
+
+.cadastro {
+  display: none;
+}
+
+.formCadastro {
+  display: inline;
+  padding: 5px 10px 20px 10px;
+}
+
+.enviar,
+input {
+  padding: 5px;
+  margin: 0px 5px 5px 0px;
+  border-radius: 4px;
+  border-width: 1px;
+  border-color: rgba(0, 150, 255, 100%);
+  color: gray;
+  font-size: 14px;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+}
+
+input:focus-within {
+  outline-style: inset;
+  outline-color: rgba(0, 150, 255, 100%);
+}
+
+.enviar {
+  padding: 4px 15px;
+  color: white;
+  border-width: 2px;
+  background-color: rgba(0, 150, 255, 100%);
+  cursor: pointer;
+}
+
+.tabelaProjetos {
+  margin: 10px;
+}
+
+.títulos,
+.projeto1 {
+  display: grid;
+  grid-template-columns: 100px 1fr 100px 1fr 1fr 100px;
+  background-color: gray;
+}
+
+.ufv,
+h4,
+h5 {
+  margin: 0px;
+  padding: 10px 0px;
+  border-style: solid;
+  border-width: 1px;
+  text-align: center;
+  color: white;
+  font-size: 16px;
+  font-weight: normal;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+}
+
+.projeto1 {
+  background-color: #d3d3d3;
+}
+
+.ufv,
+h5 {
+  color: gray;
+  font-size: 14px;
+  border-color: white;
+}
+
+.ufv {
+  color: rgba(0, 150, 255, 100%);
+  text-decoration: none;
+}
+
+.projetoCadastrado {
+  display: grid;
+  justify-content: center;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 5px;
+  border-color: rgba(0, 150, 255, 100%);
+  margin: 30px 10px 5px 10px;
+}
+
+.descriçãoProjeto {
+  display: flex;
+  flex-wrap: wrap;
+  justify-items: center;
+  padding-left: 20px;
+}
+
+h1 {
+  color: gray;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  margin: 0px;
+  font-size: 24px;
+  font-weight: normal;
+  text-decoration: underline;
+  justify-self: center;
+  padding-top: 5px;
+}
+
+.descriçãoProjeto h4 {
+  color: rgba(0, 150, 255, 100%);
+  border-style: none;
+  padding-right: 3px;
+  font-weight: bold;
+}
+
+.descriçãoProjeto h5 {
+  padding-right: 20px;
+  font-size: 16px;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+label {
+  border-style: outset;
+}
+
+.projCadastrado {
+  grid-template-columns: repeat(7, 1fr);
+}
