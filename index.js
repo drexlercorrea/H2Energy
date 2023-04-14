@@ -1,7 +1,7 @@
-import Airtable from "airtable";
+/* import Airtable from "airtable";
 const base = new Airtable({ apiKey: "pat7sOvlibq6Ui1sG" }).base(
   "Gestão de projetos H2"
-);
+); */
 
 function abrirFormulario() {
   var af = document.getElementById("cadastro");
