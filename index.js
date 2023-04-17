@@ -1,5 +1,6 @@
 const Airtable = require("airtable");
 const base = new Airtable({apiKey: "pat7sOvlibq6Ui1sG"}).base("Gestão de projetos H2");
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 function abrirFormulario() {
   var af = document.getElementById("cadastro");
@@ -30,13 +31,51 @@ function campoVazio() {
 
 function enviarFormulario() {
   var fcv = campoVazio();
-
+  
   if (fcv == 2) {
-    var p1 = document.getElementById("projeto1");
-    var ep1 = document.getElementById("projeto1").childElementCount;
-
     var dataAtual = new Date();
     var dia = dataAtual.getDate(); var mes = dataAtual.getMonth() + 1; var ano = dataAtual.getFullYear();
+
+    var fc = document.getElementById("formCadastro");
+    fc.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      var fid = (mes < 10 ? "0" : "") + mes + (dia < 10 ? "0" : "") + dia + (nid < 10 ? "0" : "") + nid + (ano - 2000);
+      var fNome = document.getElementById('nome').value;
+      var fPotencia = document.getElementById('potencia').value;
+      var fCidade = document.getElementById('cidade').value;
+      var fUsinas = document.getElementById('usinas').value;
+      var fStatus = document.getElementById('status').value;
+      var fData = dataAtual;
+      var dadosEnvio = {
+        "fields": {
+          "ID": fid,
+          "Nome da UFV": fNome,
+          "Potência": fPotencia,
+          "Cidade/UF": fCidade,
+          "Nº de usinas": fUsinas,
+          "Status": fStatus,
+          "Data": fData
+        }
+      };
+
+      try {
+        const response = await axios.post('https://api.airtable.com/v0/H2Energy/Gestão de projetos H2', dados, {
+          headers: {
+            'Authorization': 'Bearer pat7sOvlibq6Ui1sG',
+            'Content-Type': 'application/json'
+          }
+        });
+  
+        console.log('Dados enviados com sucesso para o Airtable:', response.data);
+      } catch (error) {
+        console.error('Erro ao enviar dados para o Airtable:', error);
+      }
+    });
+
+
+/*     var p1 = document.getElementById("projeto1");
+    var ep1 = document.getElementById("projeto1").childElementCount;
+
 
     var id = document.createElement("h5");
     nid = ep1 / 6 + 1;
@@ -63,7 +102,7 @@ function enviarFormulario() {
     var data = document.createElement("h5");
     var dataFormatada = (dia < 10 ? "0" : "") + dia + "/" + (mes < 10 ? "0" : "") + mes + "/" + ano;
     data.innerText = dataFormatada;
-    p1.appendChild(data);
+    p1.appendChild(data); */
 
     document.getElementById("nome").value = "";
     document.getElementById("potencia").value = "";
