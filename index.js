@@ -1,6 +1,6 @@
 const Airtable = require("airtable");
 const base = new Airtable({apiKey: "pat7sOvlibq6Ui1sG"}).base("Gestão de projetos H2");
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"
 
 function abrirFormulario() {
   var af = document.getElementById("cadastro");
