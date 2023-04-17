@@ -1,7 +1,5 @@
-/* import Airtable from "airtable";
-const base = new Airtable({ apiKey: "pat7sOvlibq6Ui1sG" }).base(
-  "Gestão de projetos H2"
-); */
+const Airtable = require("airtable");
+const base = new Airtable({apiKey: "pat7sOvlibq6Ui1sG"}).base("Gestão de projetos H2");
 
 function abrirFormulario() {
   var af = document.getElementById("cadastro");
@@ -35,30 +33,19 @@ function enviarFormulario() {
 
   if (fcv == 2) {
     var p1 = document.getElementById("projeto1");
-
     var ep1 = document.getElementById("projeto1").childElementCount;
 
     var dataAtual = new Date();
-    var dia = dataAtual.getDate();
-    var mes = dataAtual.getMonth() + 1;
-    var ano = dataAtual.getFullYear();
+    var dia = dataAtual.getDate(); var mes = dataAtual.getMonth() + 1; var ano = dataAtual.getFullYear();
 
     var id = document.createElement("h5");
     nid = ep1 / 6 + 1;
-    id.innerText =
-      (mes < 10 ? "0" : "") +
-      mes +
-      (dia < 10 ? "0" : "") +
-      dia +
-      (nid < 10 ? "0" : "") +
-      nid +
-      (ano - 2000);
+    id.innerText = (mes < 10 ? "0" : "") + mes + (dia < 10 ? "0" : "") + dia + (nid < 10 ? "0" : "") + nid + (ano - 2000);
     p1.appendChild(id);
 
     var nome = document.createElement("a");
     nome.innerText = document.getElementById("nome").value;
-    nome.setAttribute("class", "ufv");
-    nome.setAttribute("href", "#");
+    nome.setAttribute("class", "ufv"); nome.setAttribute("href", "#");
     p1.appendChild(nome);
 
     var potencia = document.createElement("h5");
@@ -74,14 +61,7 @@ function enviarFormulario() {
     p1.appendChild(status);
 
     var data = document.createElement("h5");
-    var dataFormatada =
-      (dia < 10 ? "0" : "") +
-      dia +
-      "/" +
-      (mes < 10 ? "0" : "") +
-      mes +
-      "/" +
-      ano;
+    var dataFormatada = (dia < 10 ? "0" : "") + dia + "/" + (mes < 10 ? "0" : "") + mes + "/" + ano;
     data.innerText = dataFormatada;
     p1.appendChild(data);
 
