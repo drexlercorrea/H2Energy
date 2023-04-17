@@ -62,7 +62,7 @@ function enviarFormulario() {
       };
     
       try {
-        const response = await fetch("https://api.airtable.com/v0/pat7sOvlibq6Ui1sG/GestãoProjetosH2", {
+        const response = await fetch("https://api.airtable.com/v0/pat7sOvlibq6Ui1sG/projetosh2", {
         method: 'POST',
         headers: {
           'Authorization': 'Bearer keyggOsGLubPoGKDd',
