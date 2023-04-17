@@ -1,7 +1,8 @@
+/* HEAD */
 const Airtable = require("airtable");
-const base = new Airtable({apiKey: "pat7sOvlibq6Ui1sG"}).base("Gestão de projetos H2");
-src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"
+const base = new Airtable({apiKey: "pat7sOvlibq6Ui1sG"}).base("GestãoProjetosH2");
 
+/* ABRIR E FECHAR FORMULÁRIO */
 function abrirFormulario() {
   var af = document.getElementById("cadastro");
   var seta = document.getElementById("seta");
@@ -14,6 +15,7 @@ function abrirFormulario() {
   }
 }
 
+/* DETECTAR CAMPO VAZIO NO ENVIO DO FORMULÁRIO */
 function campoVazio() {
   if (
     document.getElementById("nome").value == "" ||
@@ -29,6 +31,7 @@ function campoVazio() {
   return cv;
 }
 
+/* ENVIO DO FORMULÁRIO PARA AIRTABLE */
 function enviarFormulario() {
   var fcv = campoVazio();
   
@@ -59,7 +62,7 @@ function enviarFormulario() {
       };
 
       try {
-        const response = await axios.post('https://api.airtable.com/v0/H2Energy/Gestão de projetos H2', dados, {
+        const response = await axios.post('https://api.airtable.com/v0/H2Energy/GestãoProjetosH2', dados, {
           headers: {
             'Authorization': 'Bearer pat7sOvlibq6Ui1sG',
             'Content-Type': 'application/json'
