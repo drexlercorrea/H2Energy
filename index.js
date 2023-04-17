@@ -1,6 +1,8 @@
 /* HEAD */
 const Airtable = require("airtable");
-const base = new Airtable({apiKey: "pat7sOvlibq6Ui1sG"}).base("GestãoProjetosH2");
+const base = new Airtable({apiKey: "keyggOsGLubPoGKDd"}).base("GestãoProjetosH2");
+const tabela = base('GestãoProjetosH2');
+const axios = require("axios");
 
 /* ABRIR E FECHAR FORMULÁRIO */
 function abrirFormulario() {
@@ -31,6 +33,7 @@ function campoVazio() {
   return cv;
 }
 
+
 /* ENVIO DO FORMULÁRIO PARA AIRTABLE */
 function enviarFormulario() {
   var fcv = campoVazio();
@@ -38,11 +41,14 @@ function enviarFormulario() {
   if (fcv == 2) {
     var dataAtual = new Date();
     var dia = dataAtual.getDate(); var mes = dataAtual.getMonth() + 1; var ano = dataAtual.getFullYear();
-
+    var p1 = document.getElementById("projeto1");
+    var ep1 = document.getElementById("projeto1").childElementCount;
+    var nid = ep1 / 6 + 1;
+    
     var fc = document.getElementById("formCadastro");
     fc.addEventListener('submit', async (event) => {
       event.preventDefault();
-      var fid = (mes < 10 ? "0" : "") + mes + (dia < 10 ? "0" : "") + dia + (nid < 10 ? "0" : "") + nid + (ano - 2000);
+      var fId = (mes < 10 ? "0" : "") + mes + (dia < 10 ? "0" : "") + dia + (nid < 10 ? "0" : "") + nid + (ano - 2000);
       var fNome = document.getElementById('nome').value;
       var fPotencia = document.getElementById('potencia').value;
       var fCidade = document.getElementById('cidade').value;
@@ -51,37 +57,25 @@ function enviarFormulario() {
       var fData = dataAtual;
       var dadosEnvio = {
         "fields": {
-          "ID": fid,
-          "Nome da UFV": fNome,
-          "Potência": fPotencia,
-          "Cidade/UF": fCidade,
-          "Nº de usinas": fUsinas,
-          "Status": fStatus,
-          "Data": fData
+          "ID": fId, "Nome da UFV": fNome, "Potência": fPotencia, "Cidade/UF": fCidade, "Nº de usinas": fUsinas, "Status": fStatus, "Data": fData
         }
       };
-
+    
       try {
-        const response = await axios.post('https://api.airtable.com/v0/H2Energy/GestãoProjetosH2', dados, {
+        const response = await axios.post('https://api.airtable.com/v0/pat7sOvlibq6Ui1sG/GestãoProjetosH2', dadosEnvio, {
           headers: {
-            'Authorization': 'Bearer pat7sOvlibq6Ui1sG',
+            'Authorization': 'Bearer keyggOsGLubPoGKDd',
             'Content-Type': 'application/json'
           }
         });
-  
         console.log('Dados enviados com sucesso para o Airtable:', response.data);
       } catch (error) {
         console.error('Erro ao enviar dados para o Airtable:', error);
       }
     });
-
-
-/*     var p1 = document.getElementById("projeto1");
-    var ep1 = document.getElementById("projeto1").childElementCount;
-
-
-    var id = document.createElement("h5");
-    nid = ep1 / 6 + 1;
+    
+    
+/*  var id = document.createElement("h5");
     id.innerText = (mes < 10 ? "0" : "") + mes + (dia < 10 ? "0" : "") + dia + (nid < 10 ? "0" : "") + nid + (ano - 2000);
     p1.appendChild(id);
 
@@ -107,6 +101,7 @@ function enviarFormulario() {
     data.innerText = dataFormatada;
     p1.appendChild(data); */
 
+    
     document.getElementById("nome").value = "";
     document.getElementById("potencia").value = "";
     document.getElementById("cidade").value = "";
