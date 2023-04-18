@@ -37,7 +37,6 @@ function enviarFormulario() {
   if (fcv !== 2) {
     alert("Preencha todos os campos!");
   } else {
-    var fNome = ""; var fPotencia = ""; var fCidade = ""; var fUsinas = ""; var fStatus = ""; var fData = "";
     var dataAtual = new Date();
     var dia = dataAtual.getDate(); var mes = dataAtual.getMonth() + 1; var ano = dataAtual.getFullYear();
     var dataFormatada = (dia < 10 ? "0" : "") + dia + "/" + (mes < 10 ? "0" : "") + mes + "/" + ano;
@@ -59,23 +58,21 @@ function enviarFormulario() {
           "id": fId, "nomedaufv": fNome, "potencia": fPotencia, "cidadeuf": fCidade, "ndeusinas": fUsinas, "status": fStatus, "data": fData,
         },
       };
-      if (fcv == 2) {
-        try {
-          const response = await fetch("https://api.airtable.com/v0/app9EDXVbU7QhtUiF/projetosh2",
-            {
-              method: "POST",
-              headers: {
-                Authorization: "Bearer keyggOsGLubPoGKDd",
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(dadosEnvio),
-            }
-          );
-          console.log("Dados enviados com sucesso para o Airtable:", response.data);
-        } catch (error) {
-          console.error("Erro ao enviar dados para o Airtable:", error);
-        }
-      }
+        
+      try {
+        const response = await fetch("https://api.airtable.com/v0/app9EDXVbU7QhtUiF/projetosh2",
+        {             
+          method: "POST",              
+          headers: {               
+            Authorization: "Bearer keyggOsGLubPoGKDd",                
+            "Content-Type": "application/json",              
+          },              
+          body: JSON.stringify(dadosEnvio),            
+        });          
+        console.log("Dados enviados com sucesso para o Airtable:", response.data);        
+      } catch (error) {        
+        console.error("Erro ao enviar dados para o Airtable:", error);        
+      }  
     });
 
     /* var id = document.createElement("h5");
