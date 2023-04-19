@@ -134,31 +134,6 @@ function enviarFormulario() {
       }  
     });
 
-    /* var id = document.createElement("h5");
-    id.innerText = (mes < 10 ? "0" : "") + mes + (dia < 10 ? "0" : "") + dia + (nid < 10 ? "0" : "") + nid + (ano - 2000);
-    p1.appendChild(id);
-
-    var nome = document.createElement("a");
-    nome.innerText = document.getElementById("nome").value;
-    nome.setAttribute("class", "ufv"); nome.setAttribute("href", "#");
-    p1.appendChild(nome);
-
-    var potencia = document.createElement("h5");
-    potencia.innerText = document.getElementById("potencia").value + "MW";
-    p1.appendChild(potencia);
-
-    var cidade = document.createElement("h5");
-    cidade.innerText = document.getElementById("cidade").value;
-    p1.appendChild(cidade);
-
-    var status = document.createElement("h5");
-    status.innerText = document.getElementById("status").value;
-    p1.appendChild(status);
-
-    var data = document.createElement("h5");
-    data.innerText = dataFormatada;
-    p1.appendChild(data); */
-
     document.getElementById("nome").value = "";
     document.getElementById("potencia").value = "";
     document.getElementById("cidade").value = "";
