@@ -71,7 +71,7 @@ function abrirFormulario() {
   } else {
     af.style.cssText = "display: grid";
     seta.style.cssText = "transform: rotate(180deg)";
-  }
+  }  
 }
 
 /* DETECTAR CAMPO VAZIO NO ENVIO DO FORMULÁRIO */
@@ -85,40 +85,36 @@ function campoVazio() {
   ) {
     var cv = 1;
   } else {
-    var cv = 2;
+    var cv = 2;  
   }
   return cv;
 }
 
 /* CADASTRO DE NOVO PROJETO */
-function enviarFormulario() {
-  var fcv = campoVazio();
-  if (fcv !== 2) {
-    alert("Preencha todos os campos!");
-  } else {
-    var dataAtual = new Date();
-    var dia = dataAtual.getDate(); var mes = dataAtual.getMonth() + 1; var ano = dataAtual.getFullYear();
-    var dataFormatada = (dia < 10 ? "0" : "") + dia + "/" + (mes < 10 ? "0" : "") + mes + "/" + ano;
-    var ep1 = document.getElementById("projeto1").childElementCount; var nid = ep1 / 6 + 1;
-    var fId = (mes < 10 ? "0" : "") + mes + (dia < 10 ? "0" : "") + dia + (nid < 10 ? "0" : "") + nid + (ano - 2000);
-    var fNome = document.getElementById("nome").value;
-    var fPotencia = document.getElementById("potencia").value;
-    var fCidade = document.getElementById("cidade").value;
-    var fUsinas = document.getElementById("usinas").value;
-    var fStatus = document.getElementById("status").value;
-    var fData = dataFormatada;
+function enviarFormulario () {
+  var fc = document.getElementById("formCadastro");
+  fc.addEventListener("submit", (event) => { 
+    event.preventDefault();
 
-    var fc = document.getElementById("formCadastro");
-    fc.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      var dadosEnvio = {
-        fields: {
-          "idprojeto": fId, "nomedaufv": fNome, "potencia": fPotencia, "cidadeuf": fCidade, "ndeusinas": fUsinas, "status": fStatus, "data": fData,
-        },
-      };
-        
+    var fcv = campoVazio();
+    if (fcv !== 2) {
+      alert("Preencha todos os campos!");
+    } else {
       try {
-        const response = await fetch("https://api.airtable.com/v0/app9EDXVbU7QhtUiF/projetosh2",
+
+        var fNome = document.getElementById("nome").value;
+        var fPotencia = document.getElementById("potencia").value;
+        var fCidade = document.getElementById("cidade").value;
+        var fUsinas = document.getElementById("usinas").value;
+        var fStatus = document.getElementById("status").value;
+          
+        var dadosEnvio = {
+          fields: {
+            "nomedaufv": fNome, "potencia": fPotencia, "cidadeuf": fCidade, "ndeusinas": fUsinas, "status": fStatus,
+          },
+        };
+    
+        const response = fetch("https://api.airtable.com/v0/app9EDXVbU7QhtUiF/projetosh2",
         {             
           method: "POST",              
           headers: {               
@@ -126,21 +122,26 @@ function enviarFormulario() {
             "Content-Type": "application/json",              
           },              
           body: JSON.stringify(dadosEnvio),            
-        });          
+        });    
+    
         console.log("Dados enviados com sucesso para o Airtable:", response.data); 
+        document.getElementById("nome").value = "";
+        document.getElementById("potencia").value = "";
+        document.getElementById("cidade").value = "";
+        document.getElementById("usinas").value = "";
+        document.getElementById("status").value = ""; 
+        abrirFormulario();
+                
       } catch (error) {        
         console.error("Erro ao enviar dados para o Airtable:", error);        
-      }  
-    });
-    
-    document.getElementById("nome").value = "";
-    document.getElementById("potencia").value = "";
-    document.getElementById("cidade").value = "";
-    document.getElementById("usinas").value = "";
-    document.getElementById("status").value = "";
-        
-    abrirFormulario();    
-    var rd = "";     
+      }    
+    }  
+  });   
+}
+
+
+/* GET DO ENVIO */
+    /* var rd = "";     
     fetch("https://api.airtable.com/v0/app9EDXVbU7QhtUiF/projetosh2",
     {             
       method: "GET",              
@@ -193,6 +194,12 @@ function enviarFormulario() {
       })
       .catch(error => {
         console.error(error);
-    });          
-  }
-}
+    });           */
+
+/* TRATAR DATA ATUAL */
+/* var dataAtual = new Date();
+var dia = dataAtual.getDate(); var mes = dataAtual.getMonth() + 1; var ano = dataAtual.getFullYear();
+var dataFormatada = (dia < 10 ? "0" : "") + dia + "/" + (mes < 10 ? "0" : "") + mes + "/" + ano;
+var ep1 = document.getElementById("projeto1").childElementCount; var nid = ep1 / 6 + 1;
+var fId = (mes < 10 ? "0" : "") + mes + (dia < 10 ? "0" : "") + dia + (nid < 10 ? "0" : "") + nid + (ano - 2000);
+var fData = dataFormatada; */
