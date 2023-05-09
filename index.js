@@ -22,7 +22,7 @@ function receberDados() {
     var p1 = document.getElementById("projeto1");
     var dadosAirtable = data.records;
     function preencherTabela() {
-      var idpAirtable = fieldsAirtable.idprojeto;
+      var idpAirtable = fieldsAirtable.idprojeto - 91;
       var nomeAirtable = fieldsAirtable.nomedaufv;
       var potenciaAirtable = fieldsAirtable.potencia;
       var cidadeAirtable = fieldsAirtable.cidadeuf;
@@ -30,7 +30,8 @@ function receberDados() {
       var dataAirtable = fieldsAirtable.data;
         
       var idp = document.createElement("h5");
-      idp.innerText = idpAirtable;
+      var idFormatado = (idpAirtable < 10 ? "00" : (idpAirtable < 100 ? "0" : "")) + idpAirtable;
+      idp.innerText = idFormatado;
       p1.appendChild(idp);
         
       var nome = document.createElement("a");
