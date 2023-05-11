@@ -1,23 +1,127 @@
 /* HEAD */
 const Airtable = require("airtable");
 const base = new Airtable({ apiKey: "keyggOsGLubPoGKDd" }).base("projetosh2");
-var fieldsAirtable = "";
 
-/* OBTER DADOS CADASTRADOS NO AIRTABLE */
-function receberDados() {   
-  fetch("https://api.airtable.com/v0/app9EDXVbU7QhtUiF/projetosh2?sortField=idprojeto",
-  {             
-    method: "GET",              
-    headers: {               
-      Authorization: "Bearer keyggOsGLubPoGKDd",                
-      "Content-Type": "application/json",              
-    },                      
-  }) 
+/* ENTRAR NA UFV */
+function abrirProjeto (nameTagUfv) {
+  var bnp = document.getElementById("botãoNovoprojeto");
+  var cad = document.getElementById("cadastro");
+  var tp = document.getElementById("tabelaProjetos");
+  var pc = document.getElementById("projetoCadastrado");
+  var dp = document.getElementById("descriçãoProjeto");
+  
+  bnp.style.cssText = "display: none";
+  cad.style.cssText = "display: none";
+  tp.style.cssText = "display: none";
+  pc.style.cssText = "display: grid";
+
+  fetch("https://api.airtable.com/v0/app9EDXVbU7QhtUiF/projetosh2",
+  {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer keyggOsGLubPoGKDd",
+      "Content-Type": "application/json",
+    },
+  })
   .then(rd => {
     if (!rd.ok) {
       throw new Error('Erro ao obter os dados');
     } return rd.json();
-  })    
+  })
+  .then(data => {
+    var dadosAirtable = data.records;
+
+    for (let i = 0; i < dadosAirtable.length; i++) {
+      var fieldsAirtable = dadosAirtable[i].fields;
+      var nomeAirtable = fieldsAirtable.nomedaufv;
+      
+      if (nomeAirtable == nameTagUfv) {
+        var idpAirtable = fieldsAirtable.idprojeto - 91;
+        var potenciaAirtable = fieldsAirtable.potencia;
+        var cidadeAirtable = fieldsAirtable.cidadeuf;
+        var nUsinasAirtable = fieldsAirtable.ndeusinas;
+        var statusAirtable = fieldsAirtable.status;
+        var dataAirtable = fieldsAirtable.data;
+  
+        var nomeUfv = document.createElement("h1");
+        nomeUfv.innerText = nomeAirtable;
+        var divReferencia = pc.children[0];
+        pc.insertBefore(nomeUfv, divReferencia);
+  
+        var idTexto = document.createElement("h4");
+        idTexto.innerText = "ID:";
+        dp.appendChild(idTexto);
+  
+        var idUfv = document.createElement("h5");
+        var idFormatado = (idpAirtable < 10 ? "00" : (idpAirtable < 100 ? "0" : "")) + idpAirtable;
+        idUfv.innerText = idFormatado;
+        dp.appendChild(idUfv);
+  
+        var potenciaTexto = document.createElement("h4");
+        potenciaTexto.innerText = "Potência:";
+        dp.appendChild(potenciaTexto);
+  
+        var potenciaUfv = document.createElement("h5");
+        potenciaUfv.innerText = potenciaAirtable;
+        dp.appendChild(potenciaUfv);
+  
+        var cidadeTexto = document.createElement("h4");
+        cidadeTexto.innerText = "Cidade/ES:";
+        dp.appendChild(cidadeTexto);
+  
+        var cidadeUfv = document.createElement("h5");
+        cidadeUfv.innerText = cidadeAirtable;
+        dp.appendChild(cidadeUfv);
+  
+        var nUsinasTexto = document.createElement("h4");
+        nUsinasTexto.innerText = "Nº de Usinas:";
+        dp.appendChild(nUsinasTexto);
+  
+        var nUsinasUfv = document.createElement("h5");
+        nUsinasUfv.innerText = nUsinasAirtable;
+        dp.appendChild(nUsinasUfv);
+  
+        var statusTexto = document.createElement("h4");
+        statusTexto.innerText = "Status:";
+        dp.appendChild(statusTexto);
+  
+        var statusUfv = document.createElement("h5");
+        statusUfv.innerText = statusAirtable;
+        dp.appendChild(statusUfv);
+  
+        var dataTexto = document.createElement("h4");
+        dataTexto.innerText = "Atualização:";
+        dp.appendChild(dataTexto);
+  
+        var dataUfv = document.createElement("h5");
+        var dataAtual = new Date(dataAirtable);
+        var dia = dataAtual.getDate() + 1; var mes = dataAtual.getMonth() + 1; var ano = dataAtual.getFullYear();
+        var dataFormatada = (dia < 10 ? "0" : "") + dia + "/" + (mes < 10 ? "0" : "") + mes + "/" + ano;
+        dataUfv.innerText = dataFormatada;
+        dp.appendChild(dataUfv);
+      }
+    }
+  })
+  .catch(error => {
+    console.error(error);
+  });
+}
+
+/* OBTER DADOS CADASTRADOS NO AIRTABLE */
+function receberDados() {
+  fetch("https://api.airtable.com/v0/app9EDXVbU7QhtUiF/projetosh2?sortField=idprojeto",
+  {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer keyggOsGLubPoGKDd",
+      "Content-Type": "application/json",
+    },
+  })
+  .then(rd => {
+    if (!rd.ok) {
+      throw new Error('Erro ao obter os dados');
+    } return rd.json();
+  })
   .then(data => {
     var p1 = document.getElementById("projeto1");
     var dadosAirtable = data.records;
@@ -28,52 +132,61 @@ function receberDados() {
       var cidadeAirtable = fieldsAirtable.cidadeuf;
       var statusAirtable = fieldsAirtable.status;
       var dataAirtable = fieldsAirtable.data;
-        
+
       var idp = document.createElement("h5");
       var idFormatado = (idpAirtable < 10 ? "00" : (idpAirtable < 100 ? "0" : "")) + idpAirtable;
       idp.innerText = idFormatado;
       p1.appendChild(idp);
-        
+
       var nome = document.createElement("a");
       nome.innerText = nomeAirtable;
-      nome.setAttribute("class", "ufv"); nome.setAttribute("href", "#");
+      nome.setAttribute("class", "ufv"); nome.setAttribute("href", "#"); nome.setAttribute("id", nomeAirtable);
       p1.appendChild(nome);
-        
+
       var potencia = document.createElement("h5");
       potencia.innerText = potenciaAirtable;
       p1.appendChild(potencia);
-        
+
       var cidade = document.createElement("h5");
       cidade.innerText = cidadeAirtable;
       p1.appendChild(cidade);
-        
+
       var status = document.createElement("h5");
       status.innerText = statusAirtable;
       p1.appendChild(status);
-        
+
       var data = document.createElement("h5");
       var dataAtual = new Date(dataAirtable);
       var dia = dataAtual.getDate() + 1; var mes = dataAtual.getMonth() + 1; var ano = dataAtual.getFullYear();
       var dataFormatada = (dia < 10 ? "0" : "") + dia + "/" + (mes < 10 ? "0" : "") + mes + "/" + ano;
       data.innerText = dataFormatada;
-      p1.appendChild(data); 
+      p1.appendChild(data);
+    }
+    function selecionarUfv() {
+      var nameTag = document.querySelectorAll(".ufv");
+      nameTag.forEach(function(tag) {
+        tag.addEventListener("click", function(event) { 
+          var nameTagUfv = event.target.id; 
+          abrirProjeto (nameTagUfv);
+        }); 
+      }); 
     }
     if (formularioEnviado !== 2) {
       for (let i = 0; i < dadosAirtable.length; i++) {
         var fieldsAirtable = dadosAirtable[i].fields;
-        preencherTabela();  
-      } 
+        preencherTabela(); 
+      } selecionarUfv();
 
     } else {
       var ultimoEnviado = dadosAirtable.length - 1;
       var fieldsAirtable = dadosAirtable[ultimoEnviado].fields;
-      preencherTabela(); 
+      preencherTabela();
     } return formularioEnviado = 2;
-          
+
   })
   .catch(error => {
     console.error(error);
-  });         
+  });
 }
 
 /* ABRIR E FECHAR FORMULÁRIO */
@@ -100,15 +213,14 @@ function campoVazio() {
   ) {
     var cv = 1;
   } else {
-    var cv = 2;  
-  }
-  return cv;
+    var cv = 2;
+  } return cv;
 }
 
 /* CADASTRO DE NOVO PROJETO */
-function enviarFormulario () {
+function enviarFormulario () {  
   var fc = document.getElementById("formCadastro");
-  fc.addEventListener("submit", (event) => { 
+  fc.addEventListener("submit", (event) => {
     event.preventDefault();
 
     var fcv = campoVazio();
@@ -121,37 +233,37 @@ function enviarFormulario () {
         var fPotencia = document.getElementById("potencia").value;
         var fCidade = document.getElementById("cidade").value;
         var fUsinas = document.getElementById("usinas").value;
-        var fStatus = document.getElementById("status").value;           
+        var fStatus = document.getElementById("status").value;
         var dadosEnvio = {
           fields: {
             "nomedaufv": fNome, "potencia": fPotencia, "cidadeuf": fCidade, "ndeusinas": fUsinas, "status": fStatus,
           },
         };
-    
+
         const response = fetch("https://api.airtable.com/v0/app9EDXVbU7QhtUiF/projetosh2",
-        {             
-          method: "POST",              
-          headers: {               
-            Authorization: "Bearer keyggOsGLubPoGKDd",                
-            "Content-Type": "application/json",              
-          },              
-          body: JSON.stringify(dadosEnvio),            
-        })    
+        {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer keyggOsGLubPoGKDd",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dadosEnvio),
+        })
         .then(response => {
           if (response.ok) {
-            console.log("Dados enviados com sucesso para o Airtable:", response.data); 
+            console.log("Dados enviados com sucesso para o Airtable:", response.data);
             document.getElementById("nome").value = "";
             document.getElementById("potencia").value = "";
             document.getElementById("cidade").value = "";
             document.getElementById("usinas").value = "";
-            document.getElementById("status").value = ""; 
+            document.getElementById("status").value = "";
             abrirFormulario(); receberDados();
-          } 
+          }
         });
 
-      } catch (error) {        
-        console.error("Erro ao enviar dados para o Airtable:", error);        
-      }    
-    }  
-  });   
-}        
+      } catch (error) {
+        console.error("Erro ao enviar dados para o Airtable:", error);
+      }
+    }
+  });
+}

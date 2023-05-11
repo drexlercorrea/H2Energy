@@ -110,7 +110,7 @@ input:focus-within {
 .títulos,
 .projeto1 {
   display: grid;
-  grid-template-columns: 100px 1fr 100px 1fr 1fr 100px;
+  grid-template-columns: repeat(6, 1fr);
   background-color: gray;
 }
 
@@ -145,7 +145,7 @@ h5 {
 }
 
 .projetoCadastrado {
-  display: grid;
+  display: none;
   justify-content: center;
   border-style: solid;
   border-width: 1px;
