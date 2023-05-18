@@ -8,12 +8,16 @@ function abrirProjeto (nameTagUfv) {
   var cad = document.getElementById("cadastro");
   var tp = document.getElementById("tabelaProjetos");
   var pc = document.getElementById("projetoCadastrado");
+  var bnpa = document.getElementById("botãoNovaprancha");
+  var tpa = document.getElementById("tabelaPranchas");
   var dp = document.getElementById("descriçãoProjeto");
   
   bnp.style.cssText = "display: none";
   cad.style.cssText = "display: none";
   tp.style.cssText = "display: none";
   pc.style.cssText = "display: grid";
+  bnpa.style.cssText = "display: grid";
+  tpa.style.cssText = "display: grid";
 
   fetch("https://api.airtable.com/v0/app9EDXVbU7QhtUiF/projetosh2",
   {
@@ -141,6 +145,10 @@ function receberDados() {
       var nome = document.createElement("a");
       nome.innerText = nomeAirtable;
       nome.setAttribute("class", "ufv"); nome.setAttribute("href", "#"); nome.setAttribute("id", nomeAirtable);
+      nome.addEventListener("click", function(event) { 
+        var nameTagUfv = event.target.id; 
+        abrirProjeto (nameTagUfv);
+      }); 
       p1.appendChild(nome);
 
       var potencia = document.createElement("h5");
@@ -162,20 +170,12 @@ function receberDados() {
       data.innerText = dataFormatada;
       p1.appendChild(data);
     }
-    function selecionarUfv() {
-      var nameTag = document.querySelectorAll(".ufv");
-      nameTag.forEach(function(tag) {
-        tag.addEventListener("click", function(event) { 
-          var nameTagUfv = event.target.id; 
-          abrirProjeto (nameTagUfv);
-        }); 
-      }); 
-    }
+
     if (formularioEnviado !== 2) {
       for (let i = 0; i < dadosAirtable.length; i++) {
         var fieldsAirtable = dadosAirtable[i].fields;
         preencherTabela(); 
-      } selecionarUfv();
+      }
 
     } else {
       var ultimoEnviado = dadosAirtable.length - 1;
@@ -199,6 +199,17 @@ function abrirFormulario() {
   } else {
     af.style.cssText = "display: grid";
     seta.style.cssText = "transform: rotate(180deg)";
+  }
+}
+function abrirFormularioPrancha() {
+  var afp = document.getElementById("cadastroPrancha");
+  var sp = document.getElementById("setaPrancha");
+  if (afp.style.display == "grid") {
+    afp.style.cssText = "display: none";
+    sp.style.cssText = "transform: rotate(0deg)";
+  } else {
+    afp.style.cssText = "display: grid";
+    sp.style.cssText = "transform: rotate(180deg)";
   }
 }
 

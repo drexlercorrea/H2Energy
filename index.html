@@ -48,7 +48,7 @@
     <div class="cadastro" id="cadastro">
       <form action="#" class="formCadastro" id="formCadastro">
         <input type="text" placeholder="Nome da UFV" name="nome" id="nome" autocomplete="off">
-        <input type="number" placeholder="Potência (MW)" name="potência" id="potencia" autocomplete="off">
+        <input type="number" step="0.1" placeholder="Potência (MW)" name="potência" id="potencia" autocomplete="off">
         <input type="text" placeholder="Cidade/ES" name="cidade" id="cidade" autocomplete="off">
         <input type="number" placeholder="Nº de Usinas" name="usinas" id="usinas" autocomplete="off">
         <input name="status" id="status" list="lista-status" placeholder="Status" autocomplete="off">
@@ -83,14 +83,14 @@
       <div class="descriçãoProjeto" id="descriçãoProjeto"></div>
     </div>
 
-<!--     <div class="botãoNovoprojeto">
-      <button class="novoProjeto">Novo Projeto</button>
-      <i class="fa-solid fa-caret-down"></i>
+    <div class="botãoNovaprancha" id="botãoNovaprancha">
+      <button class="novoProjeto" onclick="abrirFormularioPrancha()">Novo Projeto</button>
+      <i class="fa-solid fa-caret-down" id="setaPrancha"></i>
     </div>
 
-    <div class="cadastro">
+    <div class="cadastroPrancha" id="cadastroPrancha">
       <form action="#" class="formCadastro">
-        <input type="text" placeholder="Nome da UFV" name="nome" autocomplete="off">
+        <input type="text" placeholder="Nome da Usina" name="nome" autocomplete="off">
         <input type="text" placeholder="Código do arquivo" name="código" autocomplete="off">
         <input name="tipo" list="lista-tipo" placeholder="Tipo de projeto" autocomplete="off">
         <datalist id="lista-tipo">
@@ -110,15 +110,15 @@
         </datalist>
         <input type="number" placeholder="Revisão" name="revisão" autocomplete="off">
         <label for="arquivo" class="enviar" title="Arquivo do projeto">Upload</label>
-        <input type="file" name="arquivo" id="arquivo" accept=".pdf,.dwg,.xlsx">
+        <input type="file" name="arquivo" id="arquivo" accept=".pdf">
         <button type="submit" class="enviar" title="Cadastrar o projeto"><i class="fa-solid fa-check"></i>
         </button>
       </form>
     </div>
 
-    <div class="tabelaProjetos">
+    <div class="tabelaPranchas" id="tabelaPranchas">
       <div class="títulos projCadastrado">
-        <h4>Nome da UFV</h4>
+        <h4>Nome da Usina</h4>
         <h4>Código do arquivo</h4>
         <h4>Tipo de projeto</h4>
         <h4>Descrição</h4>
@@ -127,7 +127,7 @@
         <h4>Download</h4>
       </div>
 
-      <div class="projeto1 projCadastrado">
+<!--       <div class="projeto1 projCadastrado">
         <h5>ITAP 100</h5>
         <h5>H2-ITAP100-ELE-00-01</h5>
         <h5>Elétrico</h5>
@@ -135,8 +135,8 @@
         <h5>00</h5>
         <h5>10/04/2023</h5>
         <a href="#" class="ufv">H2-ITAP100-ELE-00-01_rv00</a>
-      </div>
-    </div> -->
+      </div> -->
+    </div>
 
     <script>
       var formularioEnviado = ""; var fieldsAirtable = ""; var nameTagUfv = "";
