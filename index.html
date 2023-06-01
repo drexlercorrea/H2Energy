@@ -89,18 +89,25 @@
     </div>
 
     <div class="cadastroPrancha" id="cadastroPrancha">
-      <form action="#" class="formCadastro">
-        <input type="text" placeholder="Nome da Usina" name="nome" autocomplete="off">
-        <input type="text" placeholder="Código do arquivo" name="código" autocomplete="off">
-        <input name="tipo" list="lista-tipo" placeholder="Tipo de projeto" autocomplete="off">
+      <form action="#" class="formCadastro" id="formProjeto">
+        <input name="nome" list="lista-nome" id="listaNome" placeholder="Selecione a Usina" autocomplete="off">
+        <datalist id="lista-nome">
+          <option value=""></option>
+          <option value=""></option>
+          <option value=""></option>
+          <option value=""></option>
+          <option value=""></option>
+          <option value=""></option>
+        </datalist>
+        <input name="tipo" list="lista-tipo" id="listaTipo" placeholder="Tipo de projeto" autocomplete="off">
         <datalist id="lista-tipo">
           <option value="Elétrico">
           <option value="Civil">
           <option value="Aterramento">
           <option value="Valas">
         </datalist>
-        <input type="text" placeholder="Descrição" name="descrição" autocomplete="off">
-        <input name="folha" list="lista-folha" placeholder="Tamanho da folha" autocomplete="off">
+        <input type="text" placeholder="Descrição" name="descrição" id="descricao" autocomplete="off">
+        <input name="folha" list="lista-folha" id="listaFolha" placeholder="Tamanho da folha" autocomplete="off">
         <datalist id="lista-folha">
           <option value="A0">
           <option value="A1">
@@ -108,7 +115,7 @@
           <option value="A3">
           <option value="A4">
         </datalist>
-        <input type="number" placeholder="Revisão" name="revisão" autocomplete="off">
+        <input type="number" placeholder="Revisão" name="revisão" id="revisao" autocomplete="off">
         <label for="arquivo" class="enviar" title="Arquivo do projeto">Upload</label>
         <input type="file" name="arquivo" id="arquivo" accept=".pdf">
         <button type="submit" class="enviar" title="Cadastrar o projeto"><i class="fa-solid fa-check"></i>
@@ -127,7 +134,7 @@
         <h4>Download</h4>
       </div>
 
-<!--       <div class="projeto1 projCadastrado">
+      <div class="projeto1 projCadastrado">
         <h5>ITAP 100</h5>
         <h5>H2-ITAP100-ELE-00-01</h5>
         <h5>Elétrico</h5>
@@ -135,12 +142,12 @@
         <h5>00</h5>
         <h5>10/04/2023</h5>
         <a href="#" class="ufv">H2-ITAP100-ELE-00-01_rv00</a>
-      </div> -->
+      </div>
     </div>
 
     <script>
       var formularioEnviado = ""; var fieldsAirtable = ""; var nameTagUfv = "";
-      receberDados(); enviarFormulario(); 
+      receberDados(); enviarFormulario();
     </script>
   </body>
 

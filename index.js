@@ -19,7 +19,7 @@ function abrirProjeto (nameTagUfv) {
   bnpa.style.cssText = "display: grid";
   tpa.style.cssText = "display: grid";
 
-  fetch("https://api.airtable.com/v0/app9EDXVbU7QhtUiF/projetosh2",
+  fetch("https://api.airtable.com/v0/app9EDXVbU7QhtUiF/gestaodeprojetos",
   {
     method: "GET",
     headers: {
@@ -41,6 +41,7 @@ function abrirProjeto (nameTagUfv) {
       
       if (nomeAirtable == nameTagUfv) {
         var idpAirtable = fieldsAirtable.idprojeto - 91;
+        var idOriginalAirtable = fieldsAirtable.idprojeto;
         var potenciaAirtable = fieldsAirtable.potencia;
         var cidadeAirtable = fieldsAirtable.cidadeuf;
         var nUsinasAirtable = fieldsAirtable.ndeusinas;
@@ -103,6 +104,8 @@ function abrirProjeto (nameTagUfv) {
         var dataFormatada = (dia < 10 ? "0" : "") + dia + "/" + (mes < 10 ? "0" : "") + mes + "/" + ano;
         dataUfv.innerText = dataFormatada;
         dp.appendChild(dataUfv);
+
+        enviarProjeto(idOriginalAirtable);
       }
     }
   })
@@ -111,9 +114,25 @@ function abrirProjeto (nameTagUfv) {
   });
 }
 
+/* LISTAR UFVs PARA CADASTRAR PROJETO EXECUTIVO */
+function listaUfvs (nomeAirtable, nUsinasAirtable) {
+  var opcoesUsina = [
+    nomeAirtable, nomeAirtable + " A", nomeAirtable + " B", nomeAirtable + " C", 
+    nomeAirtable + " D", nomeAirtable + " E"
+  ];
+  
+  var selecionarLista = document.getElementById("lista-nome");
+  
+  var selecionarOption = selecionarLista.getElementsByTagName("option");
+ 
+  for (var i = 0; i <= nUsinasAirtable; i++) {
+    selecionarOption[i].value = opcoesUsina[i];
+  }
+}
+
 /* OBTER DADOS CADASTRADOS NO AIRTABLE */
 function receberDados() {
-  fetch("https://api.airtable.com/v0/app9EDXVbU7QhtUiF/projetosh2?sortField=idprojeto",
+  fetch("https://api.airtable.com/v0/app9EDXVbU7QhtUiF/gestaodeprojetos?sortField=idprojeto",
   {
     method: "GET",
     headers: {
@@ -136,6 +155,7 @@ function receberDados() {
       var cidadeAirtable = fieldsAirtable.cidadeuf;
       var statusAirtable = fieldsAirtable.status;
       var dataAirtable = fieldsAirtable.data;
+      var nUsinasAirtable = fieldsAirtable.ndeusinas;
 
       var idp = document.createElement("h5");
       var idFormatado = (idpAirtable < 10 ? "00" : (idpAirtable < 100 ? "0" : "")) + idpAirtable;
@@ -148,6 +168,7 @@ function receberDados() {
       nome.addEventListener("click", function(event) { 
         var nameTagUfv = event.target.id; 
         abrirProjeto (nameTagUfv);
+        listaUfvs (nomeAirtable, nUsinasAirtable);
       }); 
       p1.appendChild(nome);
 
@@ -227,6 +248,19 @@ function campoVazio() {
     var cv = 2;
   } return cv;
 }
+function campoVazioProjeto() {
+  if (
+    document.getElementById("listaNome").value == "" ||
+    document.getElementById("listaTipo").value == "" ||
+    document.getElementById("descricao").value == "" ||
+    document.getElementById("listaFolha").value == "" ||
+    document.getElementById("revisao").value == ""
+  ) {
+    var cvp = 1;
+  } else {
+    var cvp = 2;
+  } return cvp;
+}
 
 /* CADASTRO DE NOVO PROJETO */
 function enviarFormulario () {  
@@ -251,7 +285,7 @@ function enviarFormulario () {
           },
         };
 
-        const response = fetch("https://api.airtable.com/v0/app9EDXVbU7QhtUiF/projetosh2",
+        const response = fetch("https://api.airtable.com/v0/app9EDXVbU7QhtUiF/gestaodeprojetos",
         {
           method: "POST",
           headers: {
@@ -269,6 +303,58 @@ function enviarFormulario () {
             document.getElementById("usinas").value = "";
             document.getElementById("status").value = "";
             abrirFormulario(); receberDados();
+          }
+        });
+
+      } catch (error) {
+        console.error("Erro ao enviar dados para o Airtable:", error);
+      }
+    }
+  });
+}
+
+/* CADASTRO DE PROJETO EXECUTIVO */
+function enviarProjeto (idOriginalAirtable) {  
+  var fp = document.getElementById("formProjeto");
+  fp.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    var fcvp = campoVazioProjeto();
+    if (fcvp !== 2) {
+      alert("Preencha todos os campos!");
+    } else {
+
+      try {
+        var lNome = document.getElementById("listaNome").value;
+        var lTipo = document.getElementById("listaTipo").value;
+        var descricao = document.getElementById("descricao").value;
+        var lFolha = document.getElementById("listaFolha").value;
+        var revisao = document.getElementById("revisao").value;
+
+        var dadosEnvio = {
+          fields: {
+            "id": idOriginalAirtable, "nomedausina": lNome, "tipodeprojeto": lTipo, "descricao": descricao, "tamanhodafolha": lFolha, "revisao": revisao,
+          },
+        };
+
+        const response = fetch("https://api.airtable.com/v0/appJFXS6s2GGwHKyw/projetosexecutivos",
+        {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer keyggOsGLubPoGKDd",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dadosEnvio),
+        })
+        .then(response => {
+          if (response.ok) {
+            console.log("Dados enviados com sucesso para o Airtable:", response.data);
+            document.getElementById("listaNome").value = "";
+            document.getElementById("listaTipo").value = "";
+            document.getElementById("descricao").value = "";
+            document.getElementById("listaFolha").value = "";
+            document.getElementById("revisao").value = "";
+            abrirFormularioPrancha();
           }
         });
 
