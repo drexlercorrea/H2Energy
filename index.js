@@ -383,8 +383,7 @@ function receberProjetos(idOriginalAirtable) {
   .then(data => {
     var pe = document.getElementById("projetosExecutivos");
     var dadosAirtable = data.records;
-
-/* ********************************************************************************************* */
+    
     function preencherProjetos() {
       var usinaAirtable = fieldsAirtable.nomedausina;
       var tipoAirtable = fieldsAirtable.tipodeprojeto;
@@ -394,8 +393,15 @@ function receberProjetos(idOriginalAirtable) {
       var dataUsinaAirtable = fieldsAirtable.data;
 
       var siglaNome = usinaAirtable.normalize("NFD").replace(/[\u0300-\u036f\s]/g, "");    
-      var siglaTipo = tipoAirtable.normalize("NFD").replace(/[\u0300-\u036f\s]/g, "").slice(0, 3).toUpperCase();
-      var codigoArquivo = "H2-" + siglaNome + "-" + siglaTipo + "-01";
+      var siglaTipo = tipoAirtable.normalize("NFD").replace(/[\u0300-\u036f\s]/g, "").slice(0, 3).toUpperCase();      
+      var mesmoProjeto = "H2-" + siglaNome + "-" + siglaTipo;
+      projetosIguais.push(mesmoProjeto);
+      var contadorProjeto = 0;
+      for (var i = 0; i < projetosIguais.length; i++) {
+        if (projetosIguais[i] === mesmoProjeto) {
+          contadorProjeto++;
+        }
+      } var codigoArquivo = "H2-" + siglaNome + "-" + siglaTipo + "-" + (contadorProjeto < 10 ? "0" : "") + contadorProjeto;
 
       var folhaMaisRevisao = folhaAirtable + " | " + revisaoAirtable;
 
@@ -429,15 +435,8 @@ function receberProjetos(idOriginalAirtable) {
       var linkProjeto = document.createElement("a");
       linkProjeto.innerText = codigoArquivo + "_rv" + revisaoAirtable;
       linkProjeto.setAttribute("class", "ufv"); linkProjeto.setAttribute("href", "#");
-/*       nome.setAttribute("id", nomeAirtable);
-      nome.addEventListener("click", function(event) { 
-        var nameTagUfv = event.target.id; 
-        abrirProjeto (nameTagUfv);
-        listaUfvs (nomeAirtable, nUsinasAirtable);
-      });  */
       pe.appendChild(linkProjeto);
     }
-/* ********************************************************************************************* */
 
     if (projetoEnviado !== 2) {
       for (let i = 0; i < dadosAirtable.length; i++) {
