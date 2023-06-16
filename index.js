@@ -1,6 +1,33 @@
 /* HEAD */
 const Airtable = require("airtable");
 const base = new Airtable({ apiKey: "keyggOsGLubPoGKDd" }).base("projetosh2");
+const nodemailer = require('nodemailer');
+
+
+async function main() {
+  let transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    auth: {user: "drexlervc@gmail.com", pass: "bmnddxmnfdvhschy",},
+    tls: {rejectUnauthorized: false,},
+  });
+
+  let info = await transporter.sendMail({
+    from: "drexlervc@gmail.com",
+    to: "drexlercorrea@hotmail.com",
+    /* cc: "", */
+    subject: "Hello ✔",
+    text: "Hello world?",
+    html: "<b>Hello world?</b>",
+  });
+
+  console.log("Message sent: %s", info.messageId);
+  console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+}
+
+main().catch(console.error);
+
 
 /* ABRIR E FECHAR FORMULÁRIO */
 function abrirFormulario() {
