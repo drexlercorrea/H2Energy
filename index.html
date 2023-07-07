@@ -1,146 +1,144 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="/imagens/logo.png">
-    <script src="https://kit.fontawesome.com/b182c006ab.js" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="index.js"></script>
-    <script type="text/javascript" src="package-lock.json"></script>
-    <script type="text/javascript" src="package.json"></script>
-    <title>H2App</title>
-  </head>
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="/imagens/logo.png">
+  <script src="https://kit.fontawesome.com/b182c006ab.js" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="script.js"></script>
+  <script type="text/javascript" src="package-lock.json"></script>
+  <script type="text/javascript" src="package.json"></script>
+  <title>H2App</title>
+</head>
 
-  <body>
-    <!-- CABEÇALHO -->
-    <nav>
+<body>
+  <!-- CABEÇALHO -->
+  <nav>
 
-      <div class="cabeçalho">
-        <img class="logo" src="/imagens/logoh2.png" alt="Logomarca H2">
-        <img class="h2App" src="/imagens/logoh2app.png" alt="Logomarca H2App">
-      </div>
-
-      <div class="nav">
-        <ul>
-          <li><a href="">Início</a></li>
-          <li><a href="#">ADM</a></li>
-          <li><a href="#">Fundiário</a></li>
-          <li><a href="#">Jurídico</a></li>
-          <li><a href="#">Engenharia</a></li>
-          <li><a href="#">Projetos</a></li>
-          <li><a href="#">Obras</a></li>
-          <li><a href="#">O&M</a></li>
-        </ul>
-      </div>
-
-    </nav>
-
-    <!-- PROJETOS -->
-    <!-- CADASTRAR NOVO PROJETO -->
-    <div class="botãoNovoprojeto" id="botãoNovoprojeto">
-      <button class="novoProjeto" onclick="abrirFormulario()">Novo Projeto</button>
-      <i class="fa-solid fa-caret-down" id="seta"></i>
+    <div class="cabeçalho">
+      <img class="logo" src="/imagens/logoh2.png" alt="Logomarca H2">
+      <img class="h2App" src="/imagens/logoh2app.png" alt="Logomarca H2App">
     </div>
 
-    <div class="cadastro" id="cadastro">
-      <form action="#" class="formCadastro" id="formCadastro">
-        <input type="text" placeholder="Nome da UFV" name="nome" id="nome" autocomplete="off">
-        <input type="number" step="0.1" placeholder="Potência (MW)" name="potência" id="potencia" autocomplete="off">
-        <input type="text" placeholder="Cidade/ES" name="cidade" id="cidade" autocomplete="off">
-        <input type="number" placeholder="Nº de Usinas" name="usinas" id="usinas" autocomplete="off">
-        <input name="status" id="status" list="lista-status" placeholder="Status" autocomplete="off">
-        <datalist id="lista-status">
-          <option value="Liberado para projeto">
-          <option value="Obra em execução">
-          <option value="As built">
-          <option value="Concluído">
-        </datalist>
-        <button type="submit" class="enviar" title="Cadastrar o projeto">
-          <i class="fa-solid fa-check"></i>
-        </button>
-      </form>
+    <div class="nav">
+      <ul>
+        <li><a href="">Início</a></li>
+        <li><a href="#">ADM</a></li>
+        <li><a href="#">Fundiário</a></li>
+        <li><a href="#">Jurídico</a></li>
+        <li><a href="#">Engenharia</a></li>
+        <li><a href="#">Projetos</a></li>
+        <li><a href="#">O&M</a></li>
+      </ul>
     </div>
 
-    <!-- TABELA DE PROJETOS -->
-    <div class="tabelaProjetos" id="tabelaProjetos">
-      <div class="títulos">
-        <h4>ID</h4>
-        <h4>Projeto</h4>
-        <h4>Potência</h4>
-        <h4>Cidade/UF</h4>
-        <h4>Status</h4>
-        <h4>Atualização</h4>
-      </div>
+  </nav>
 
-      <div class="projeto1" id="projeto1"></div>
+  <!-- PROJETOS -->
+  <!-- CADASTRAR NOVO PROJETO -->
+  <div class="botãoNovoprojeto" id="botãoNovoprojeto">
+    <button class="novoProjeto" onclick="abrirFormulario()">Novo Projeto</button>
+    <i class="fa-solid fa-caret-down" id="seta"></i>
+  </div>
+
+  <div class="cadastro" id="cadastro">
+    <form action="#" class="formCadastro" id="formCadastro">
+      <input type="text" placeholder="Nome da UFV" name="nome" id="nome" autocomplete="off">
+      <input type="number" step="0.1" placeholder="Potência (MW)" name="potência" id="potencia" autocomplete="off">
+      <input type="text" placeholder="Cidade/ES" name="cidade" id="cidade" autocomplete="off">
+      <input type="number" placeholder="Nº de Usinas" name="usinas" id="usinas" autocomplete="off">
+      <input name="status" id="status" list="lista-status" placeholder="Status" autocomplete="off">
+      <datalist id="lista-status">
+        <option value="Liberado para projeto">
+        <option value="Obra em execução">
+        <option value="As built">
+        <option value="Concluído">
+      </datalist>
+      <button type="submit" class="enviar" title="Cadastrar o projeto">
+        <i class="fa-solid fa-check"></i>
+      </button>
+    </form>
+  </div>
+
+  <!-- TABELA DE PROJETOS -->
+  <div class="tabelaProjetos" id="tabelaProjetos">
+    <div class="títulos">
+      <h4>ID</h4>
+      <h4>Projeto</h4>
+      <h4>Potência</h4>
+      <h4>Cidade/UF</h4>
+      <h4>Status</h4>
+      <h4>Atualização</h4>
     </div>
 
-    <!-- PROJETOS CADASTRADOS -->
-    <div class="projetoCadastrado" id="projetoCadastrado">
-      <div class="descriçãoProjeto" id="descriçãoProjeto"></div>
+    <div class="projeto1" id="projeto1"></div>
+  </div>
+
+  <!-- PROJETOS CADASTRADOS -->
+  <div class="projetoCadastrado" id="projetoCadastrado">
+    <div class="descriçãoProjeto" id="descriçãoProjeto"></div>
+  </div>
+
+  <div class="botãoNovaprancha" id="botãoNovaprancha">
+    <button class="novoProjeto" onclick="abrirFormularioPrancha()">Novo Projeto</button>
+    <i class="fa-solid fa-caret-down" id="setaPrancha"></i>
+  </div>
+
+  <div class="cadastroPrancha" id="cadastroPrancha">
+    <form action="#" class="formCadastro" id="formProjeto">
+      <input name="nome" list="lista-nome" id="listaNome" placeholder="Selecione a Usina" autocomplete="off">
+      <datalist id="lista-nome">
+        <option value=""></option>
+        <option value=""></option>
+        <option value=""></option>
+        <option value=""></option>
+        <option value=""></option>
+        <option value=""></option>
+      </datalist>
+      <input name="tipo" list="lista-tipo" id="listaTipo" placeholder="Tipo de projeto" autocomplete="off">
+      <datalist id="lista-tipo">
+        <option value="Elétrico">
+        <option value="Civil">
+        <option value="Aterramento">
+        <option value="Valas">
+      </datalist>
+      <input type="text" placeholder="Descrição" name="descrição" id="descricao" autocomplete="off">
+      <input name="folha" list="lista-folha" id="listaFolha" placeholder="Tamanho da folha" autocomplete="off">
+      <datalist id="lista-folha">
+        <option value="A0">
+        <option value="A1">
+        <option value="A2">
+        <option value="A3">
+        <option value="A4">
+      </datalist>
+      <input type="number" placeholder="Revisão" name="revisão" id="revisao" autocomplete="off">
+      <label for="arquivo" class="enviar" title="Arquivo do projeto">Upload</label>
+      <input type="file" name="arquivo" id="arquivo" accept=".pdf">
+      <button type="submit" class="enviar" title="Cadastrar o projeto"><i class="fa-solid fa-check"></i>
+      </button>
+    </form>
+  </div>
+
+  <div class="tabelaPranchas" id="tabelaPranchas">
+    <div class="títulos projCadastrado">
+      <h4>Nome da Usina</h4>
+      <h4>Código do arquivo</h4>
+      <h4>Tipo de projeto</h4>
+      <h4>Descrição</h4>
+      <h4>Folha | Revisão</h4>
+      <h4>Data da emissão</h4>
+      <h4>Download</h4>
     </div>
 
-    <div class="botãoNovaprancha" id="botãoNovaprancha">
-      <button class="novoProjeto" onclick="abrirFormularioPrancha()">Novo Projeto</button>
-      <i class="fa-solid fa-caret-down" id="setaPrancha"></i>
-    </div>
+    <div class="projeto1 projCadastrado" id="projetosExecutivos"></div>
+  </div>
 
-    <div class="cadastroPrancha" id="cadastroPrancha">
-      <form action="#" class="formCadastro" id="formProjeto">
-        <input name="nome" list="lista-nome" id="listaNome" placeholder="Selecione a Usina" autocomplete="off">
-        <datalist id="lista-nome">
-          <option value=""></option>
-          <option value=""></option>
-          <option value=""></option>
-          <option value=""></option>
-          <option value=""></option>
-          <option value=""></option>
-        </datalist>
-        <input name="tipo" list="lista-tipo" id="listaTipo" placeholder="Tipo de projeto" autocomplete="off">
-        <datalist id="lista-tipo">
-          <option value="Elétrico">
-          <option value="Civil">
-          <option value="Aterramento">
-          <option value="Valas">
-        </datalist>
-        <input type="text" placeholder="Descrição" name="descrição" id="descricao" autocomplete="off">
-        <input name="folha" list="lista-folha" id="listaFolha" placeholder="Tamanho da folha" autocomplete="off">
-        <datalist id="lista-folha">
-          <option value="A0">
-          <option value="A1">
-          <option value="A2">
-          <option value="A3">
-          <option value="A4">
-        </datalist>
-        <input type="number" placeholder="Revisão" name="revisão" id="revisao" autocomplete="off">
-        <label for="arquivo" class="enviar" title="Arquivo do projeto">Upload</label>
-        <input type="file" name="arquivo" id="arquivo" accept=".pdf">
-        <button type="submit" class="enviar" title="Cadastrar o projeto"><i class="fa-solid fa-check"></i>
-        </button>
-      </form>
-    </div>
-
-    <div class="tabelaPranchas" id="tabelaPranchas">
-      <div class="títulos projCadastrado">
-        <h4>Nome da Usina</h4>
-        <h4>Código do arquivo</h4>
-        <h4>Tipo de projeto</h4>
-        <h4>Descrição</h4>
-        <h4>Folha | Revisão</h4>
-        <h4>Data da emissão</h4>
-        <h4>Download</h4>
-      </div>
-
-      <div class="projeto1 projCadastrado" id="projetosExecutivos"></div>
-    </div>
-
-    <script>
-      var formularioEnviado = ""; var fieldsAirtable = ""; var nameTagUfv = ""; var projetoEnviado = "";
-      var projetosIguais = []; receberDados(); enviarFormulario();
-    </script>
-  </body>
+  <script>
+    var formularioEnviado = ""; var fieldsAirtable = ""; var nameTagUfv = ""; var projetoEnviado = ""; var projetosIguais = []; receberDados(); enviarFormulario();
+  </script>
+</body>
 
 </html>

@@ -43,7 +43,7 @@ body {
   padding: 10px;
 }
 
-.botãoNovoprojeto, 
+.botãoNovoprojeto,
 .botãoNovaprancha {
   display: grid;
   grid-template-columns: 179.3px 1fr;
@@ -70,9 +70,9 @@ body {
   font-size: 80%;
 }
 
-.cadastro, 
+.cadastro,
 .cadastroPrancha,
-.botãoNovaprancha, 
+.botãoNovaprancha,
 .tabelaPranchas {
   display: none;
 }
@@ -107,7 +107,7 @@ input:focus-within {
   cursor: pointer;
 }
 
-.tabelaProjetos, 
+.tabelaProjetos,
 .tabelaPranchas {
   margin: 10px;
 }
