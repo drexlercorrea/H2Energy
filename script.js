@@ -323,8 +323,8 @@ function abrirProjeto(nameTagUfv) {
           dataUfv.innerText = dataFormatada;
           dp.appendChild(dataUfv);
 
-          enviarProjeto(idOriginalAirtable);
-          receberProjetos(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeAirtable);
+          enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeAirtable);
+          receberProjetos(idOriginalAirtable);
         }
       }
     })
@@ -369,7 +369,7 @@ function enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeA
         var descricao = document.getElementById("descricao").value;
         var lFolha = document.getElementById("listaFolha").value;
         var revisao = document.getElementById("revisao").value;
-        var lid = idOriginalAirtable - 91
+        var lid = ((idOriginalAirtable - 91) < 10 ? "00" : (idOriginalAirtable - 91) < 100 ? "0" : "") + (idOriginalAirtable - 91);
 
         var siglaNomeCodigo = lNome.normalize("NFD").replace(/[\u0300-\u036f\s]/g, "").toUpperCase();
         var siglaTipoCodigo = lTipo.normalize("NFD").replace(/[\u0300-\u036f\s]/g, "").slice(0, 3).toUpperCase();
@@ -378,13 +378,18 @@ function enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeA
         var codigosArquivos = document.getElementsByClassName("codigosArquivos");
         var arraycodigosArquivos = Array.from(codigosArquivos);
         var contadorCodigo = 0;
-        arraycodigosArquivos.forEach(() => {
-          if (arraycodigosArquivos === codigoAtual) {contadorCodigo++;}          
-        });
 
-        var codigoFinal = codigoAtual + contadorCodigo;
+        for (var i = 0; i < arraycodigosArquivos.length; i++) {
+          if (arraycodigosArquivos[i] == codigoAtual) {
+            contadorCodigo++;
+          }
+        }
 
-        function subtraiStrings(lNome, nomeAirtable) {
+        var codigoFinal = codigoAtual + "-" + (contadorCodigo < 10 ? "0" : "") + contadorCodigo;
+
+        var resultadoNome = "teste"; 
+
+/*         function subtraiStrings(lNome, nomeAirtable) {
           var resultadoNome = '';        
           for (var i = 0; i < lNome.length; i++) {
             if (nomeAirtable.indexOf(lNome[i]) === -1) {
@@ -393,7 +398,7 @@ function enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeA
           } 
           if (resultadoNome == "") {resultadoNome = "Geral";}     
           return resultadoNome;
-        } subtraiStrings(lNome, nomeAirtable);
+        } subtraiStrings(lNome, nomeAirtable); */
       
         var dadosEnvio = {
           fields: {
@@ -413,10 +418,9 @@ function enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeA
           cidade: cidadeAirtable,
           tipo: lTipo,
           usina: resultadoNome,
-          código: codigoFinal,
+          codigo: codigoFinal,
           revisao: revisao,
           descriçao: descricao,
-
         };
 
         var response = fetch("https://api.airtable.com/v0/appJFXS6s2GGwHKyw/projetosexecutivos",{
@@ -452,7 +456,6 @@ function enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeA
             .catch(error => {
               console.error('Erro na requisição:', error);
             });
-
           }
         });
       } catch (error) {
