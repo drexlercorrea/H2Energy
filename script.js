@@ -404,7 +404,7 @@ function enviarProjeto(idOriginalAirtable) {
             document.getElementById("listaFolha").value = "";
             document.getElementById("revisao").value = "";
             abrirFormularioPrancha();
-            receberProjetos(idOriginalAirtable);            
+            receberProjetos(idOriginalAirtable); 
           }
         });
       } catch (error) {
@@ -532,40 +532,3 @@ function receberProjetos(idOriginalAirtable) {
       console.error(error);
     });
 }
-
-/* ENVIAR EMAIL AO CADASTRAR UM PROJETO EXECUTIVO */
-async function enviarEmail() {
-  const nodemailer = require("nodemailer");
-
-  var nomeEmail = document.getElementById("listaNome").value;
-  var tipoEmail = document.getElementById("listaTipo").value;
-  var descricaoEmail = document.getElementById("descricao").value;
-  var revisaoEmail = document.getElementById("revisao").value;
-
-  let transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    auth: { user: "drexlervc@gmail.com", pass: "bmnddxmnfdvhschy" },
-    tls: { rejectUnauthorized: false },
-  });
-
-  const corpoEmail =
-    '<html> <b>* Mensagem automática. Não responda esse e-mail. *</b> <p>________________________________________________________________________</p> <p>Um novo projeto executivo foi cadastrado. Segue os dados abaixo:</p> <b style= "text-decoration: underline;">TAB200</b> <li>ID: 001;</li> <li>Cidade: Tabatinga/SP;</li> <li>Tipo: ' +
-    tipoEmail +
-    ";</li> <li>Usina: Geral;</li> <li>Código: H2-UFVTAB200-ELE-01;</li> <li>Revisão: " +
-    revisaoEmail +
-    ";</li> <li>Descrição: " +
-    descricaoEmail +
-    ".</li> <p>________________________________________________________________________</p>  <b>* DOCUMENTO EM ANEXO *</b> </html>";
-
-  let info = await transporter.sendMail({
-    from: "drexlervc@gmail.com",
-    to: "drexlercorrea@hotmail.com",
-    /* cc: "", */
-    subject: "Novo Projeto Executivo | TAB200 | Status: Obra em execução",
-    html: corpoEmail,
-  });
-
-  console.log("Message sent: %s", info.messageId);
-} enviarEmail().catch(console.error);
