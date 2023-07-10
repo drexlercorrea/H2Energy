@@ -40,6 +40,11 @@ app.post('/enviar-email', (req, res) => {
     console.log("Message sent: %s", info.messageId);
   } enviarEmail().catch(console.error);
 
+  const resposta = {
+    status: 'Sucesso',
+    mensagem: 'E-mail enviado com sucesso!'
+  }; res.json(resposta);
+
 });
 
 app.listen(3000, () => {

@@ -82,7 +82,7 @@ function enviarFormulario() {
           },
         };
 
-        const response = fetch(
+        var response = fetch(
           "https://api.airtable.com/v0/app9EDXVbU7QhtUiF/gestaodeprojetos",
           {
             method: "POST",
@@ -116,8 +116,7 @@ function enviarFormulario() {
 
 /* OBTER DADOS DAS UFV's CADASTRADAS */
 function receberDados() {
-  fetch(
-    "https://api.airtable.com/v0/app9EDXVbU7QhtUiF/gestaodeprojetos?sortField=idprojeto",
+  fetch("https://api.airtable.com/v0/app9EDXVbU7QhtUiF/gestaodeprojetos?sortField=idprojeto",
     {
       method: "GET",
       headers: {
@@ -382,22 +381,14 @@ function enviarProjeto(idOriginalAirtable) {
           },
         };
 
-        const response = fetch(
-          "https://api.airtable.com/v0/appJFXS6s2GGwHKyw/projetosexecutivos",
-          {
-            method: "POST",
-            headers: {
-              Authorization: "Bearer keyggOsGLubPoGKDd",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(dadosEnvio),
-          }
-        ).then((response) => {
+        var response = fetch("https://api.airtable.com/v0/appJFXS6s2GGwHKyw/projetosexecutivos",{
+          method: "POST",
+          headers: {Authorization: "Bearer keyggOsGLubPoGKDd", "Content-Type": "application/json",},
+          body: JSON.stringify(dadosEnvio),})
+
+        .then((response) => {
           if (response.ok) {
-            console.log(
-              "Dados enviados com sucesso para o Airtable:",
-              response.data
-            );
+            console.log("Dados enviados com sucesso para o Airtable:",response.data);
             document.getElementById("listaNome").value = "";
             document.getElementById("listaTipo").value = "";
             document.getElementById("descricao").value = "";
@@ -405,6 +396,25 @@ function enviarProjeto(idOriginalAirtable) {
             document.getElementById("revisao").value = "";
             abrirFormularioPrancha();
             receberProjetos(idOriginalAirtable); 
+
+            fetch('http://localhost:3000/enviar-email', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},        
+            })
+            .then(resposta => {
+              if (resposta.ok) {
+                return resposta.json();
+              } else {
+                throw new Error('Erro ao enviar o e-mail.');
+              }
+            })
+            .then(data => {
+              console.log('E-mail enviado com sucesso!', data);
+            })
+            .catch(error => {
+              console.error('Erro na requisição:', error);
+            });
+
           }
         });
       } catch (error) {
@@ -416,119 +426,112 @@ function enviarProjeto(idOriginalAirtable) {
 
 /* OBTER DADOS DOS PROJETOS EXECUTIVOS CADASTRADOS */
 function receberProjetos(idOriginalAirtable) {
-  fetch(
-    "https://api.airtable.com/v0/appJFXS6s2GGwHKyw/projetosexecutivos?filterByFormula=id%3D" +
-      idOriginalAirtable +
-      "&sortField=data",
-    {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer keyggOsGLubPoGKDd",
-        "Content-Type": "application/json",
-      },
+  fetch("https://api.airtable.com/v0/appJFXS6s2GGwHKyw/projetosexecutivos?filterByFormula=id%3D" +
+    idOriginalAirtable + "&sortField=data",{method: "GET",
+      headers: {Authorization: "Bearer keyggOsGLubPoGKDd", "Content-Type": "application/json",},
     }
   )
-    .then((rd) => {
-      if (!rd.ok) {
-        throw new Error("Erro ao obter os dados");
-      }
-      return rd.json();
-    })
-    .then((data) => {
-      var pe = document.getElementById("projetosExecutivos");
-      var dadosAirtable = data.records;
+  .then((rd) => {
+    if (!rd.ok) {
+      throw new Error("Erro ao obter os dados");
+    }
+    return rd.json();
+  })
+  .then((data) => {
+    var pe = document.getElementById("projetosExecutivos");
+    var dadosAirtable = data.records;
 
-      function preencherProjetos() {
-        var usinaAirtable = fieldsAirtable.nomedausina;
-        var tipoAirtable = fieldsAirtable.tipodeprojeto;
-        var descricaoAirtable = fieldsAirtable.descricao;
-        var folhaAirtable = fieldsAirtable.tamanhodafolha;
-        var revisaoAirtable = fieldsAirtable.revisao;
-        var dataUsinaAirtable = fieldsAirtable.data;
+    function preencherProjetos() {
+      var usinaAirtable = fieldsAirtable.nomedausina;
+      var tipoAirtable = fieldsAirtable.tipodeprojeto;
+      var descricaoAirtable = fieldsAirtable.descricao;
+      var folhaAirtable = fieldsAirtable.tamanhodafolha;
+      var revisaoAirtable = fieldsAirtable.revisao;
+      var dataUsinaAirtable = fieldsAirtable.data;
 
-        var siglaNome = usinaAirtable
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f\s]/g, "");
-        var siglaTipo = tipoAirtable
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f\s]/g, "")
-          .slice(0, 3)
-          .toUpperCase();
-        var mesmoProjeto = "H2-" + siglaNome + "-" + siglaTipo;
-        projetosIguais.push(mesmoProjeto);
-        var contadorProjeto = 0;
-        for (var i = 0; i < projetosIguais.length; i++) {
-          if (projetosIguais[i] === mesmoProjeto) {
-            contadorProjeto++;
-          }
+      var siglaNome = usinaAirtable
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f\s]/g, "");
+      var siglaTipo = tipoAirtable
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f\s]/g, "")
+        .slice(0, 3)
+        .toUpperCase();
+      var mesmoProjeto = "H2-" + siglaNome + "-" + siglaTipo;
+      projetosIguais.push(mesmoProjeto);
+      var contadorProjeto = 0;
+      for (var i = 0; i < projetosIguais.length; i++) {
+        if (projetosIguais[i] === mesmoProjeto) {
+          contadorProjeto++;
         }
-        var codigoArquivo =
-          "H2-" +
-          siglaNome +
-          "-" +
-          siglaTipo +
-          "-" +
-          (contadorProjeto < 10 ? "0" : "") +
-          contadorProjeto;
-
-        var folhaMaisRevisao = folhaAirtable + " | " + revisaoAirtable;
-
-        var nomeUsina = document.createElement("h5");
-        nomeUsina.innerText = usinaAirtable;
-        pe.appendChild(nomeUsina);
-
-        var codigoProjeto = document.createElement("h5");
-        codigoProjeto.innerText = codigoArquivo;
-        pe.appendChild(codigoProjeto);
-
-        var tipoProjeto = document.createElement("h5");
-        tipoProjeto.innerText = tipoAirtable;
-        pe.appendChild(tipoProjeto);
-
-        var descricaoProjeto = document.createElement("h5");
-        descricaoProjeto.innerText = descricaoAirtable;
-        pe.appendChild(descricaoProjeto);
-
-        var folhaerevisaoProjeto = document.createElement("h5");
-        folhaerevisaoProjeto.innerText = folhaMaisRevisao;
-        pe.appendChild(folhaerevisaoProjeto);
-
-        var dataProjeto = document.createElement("h5");
-        var dataAtual = new Date(dataUsinaAirtable);
-        var dia = dataAtual.getUTCDate();
-        var mes = dataAtual.getUTCMonth() + 1;
-        var ano = dataAtual.getUTCFullYear();
-        var dataFormatada =
-          (dia < 10 ? "0" : "") +
-          dia +
-          "/" +
-          (mes < 10 ? "0" : "") +
-          mes +
-          "/" +
-          ano;
-        dataProjeto.innerText = dataFormatada;
-        pe.appendChild(dataProjeto);
-
-        var linkProjeto = document.createElement("a");
-        linkProjeto.innerText = codigoArquivo + "_rv" + revisaoAirtable;
-        linkProjeto.setAttribute("class", "ufv");
-        linkProjeto.setAttribute("href", "#");
-        pe.appendChild(linkProjeto);
       }
+      var codigoArquivo =
+        "H2-" +
+        siglaNome +
+        "-" +
+        siglaTipo +
+        "-" +
+        (contadorProjeto < 10 ? "0" : "") +
+        contadorProjeto;
 
-      if (projetoEnviado !== 2) {
-        for (let i = 0; i < dadosAirtable.length; i++) {
-          var fieldsAirtable = dadosAirtable[i].fields;
-          preencherProjetos();
-        }
-      } else {
-        var ultimoEnviado = dadosAirtable.length - 1;
-        var fieldsAirtable = dadosAirtable[ultimoEnviado].fields;
+      var folhaMaisRevisao = folhaAirtable + " | " + revisaoAirtable;
+
+      var nomeUsina = document.createElement("h5");
+      nomeUsina.innerText = usinaAirtable;
+      pe.appendChild(nomeUsina);
+
+      var codigoProjeto = document.createElement("h5");
+      codigoProjeto.innerText = codigoArquivo;
+      pe.appendChild(codigoProjeto);
+
+      var tipoProjeto = document.createElement("h5");
+      tipoProjeto.innerText = tipoAirtable;
+      pe.appendChild(tipoProjeto);
+
+      var descricaoProjeto = document.createElement("h5");
+      descricaoProjeto.innerText = descricaoAirtable;
+      pe.appendChild(descricaoProjeto);
+
+      var folhaerevisaoProjeto = document.createElement("h5");
+      folhaerevisaoProjeto.innerText = folhaMaisRevisao;
+      pe.appendChild(folhaerevisaoProjeto);
+
+      var dataProjeto = document.createElement("h5");
+      var dataAtual = new Date(dataUsinaAirtable);
+      var dia = dataAtual.getUTCDate();
+      var mes = dataAtual.getUTCMonth() + 1;
+      var ano = dataAtual.getUTCFullYear();
+      var dataFormatada =
+        (dia < 10 ? "0" : "") +
+        dia +
+        "/" +
+        (mes < 10 ? "0" : "") +
+        mes +
+        "/" +
+        ano;
+      dataProjeto.innerText = dataFormatada;
+      pe.appendChild(dataProjeto);
+
+      var linkProjeto = document.createElement("a");
+      linkProjeto.innerText = codigoArquivo + "_rv" + revisaoAirtable;
+      linkProjeto.setAttribute("class", "ufv");
+      linkProjeto.setAttribute("href", "#");
+      pe.appendChild(linkProjeto);
+    }
+
+    if (projetoEnviado !== 2) {
+      for (let i = 0; i < dadosAirtable.length; i++) {
+        var fieldsAirtable = dadosAirtable[i].fields;
         preencherProjetos();
       }
-      return (projetoEnviado = 2);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+    } else {
+      var ultimoEnviado = dadosAirtable.length - 1;
+      var fieldsAirtable = dadosAirtable[ultimoEnviado].fields;
+      preencherProjetos();
+    }
+    return (projetoEnviado = 2);
+  })
+  .catch((error) => {
+    console.error(error);
+  });
 }
