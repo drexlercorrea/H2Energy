@@ -324,7 +324,7 @@ function abrirProjeto(nameTagUfv) {
           dp.appendChild(dataUfv);
 
           enviarProjeto(idOriginalAirtable);
-          receberProjetos(idOriginalAirtable);
+          receberProjetos(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeAirtable);
         }
       }
     })
@@ -354,7 +354,7 @@ function listaUfvs(nomeAirtable, nUsinasAirtable) {
 }
 
 /* CADASTRO DE PROJETO EXECUTIVO */
-function enviarProjeto(idOriginalAirtable) {
+function enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeAirtable) {
   var fp = document.getElementById("formProjeto");
   fp.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -369,7 +369,32 @@ function enviarProjeto(idOriginalAirtable) {
         var descricao = document.getElementById("descricao").value;
         var lFolha = document.getElementById("listaFolha").value;
         var revisao = document.getElementById("revisao").value;
+        var lid = idOriginalAirtable - 91
 
+        var siglaNomeCodigo = lNome.normalize("NFD").replace(/[\u0300-\u036f\s]/g, "").toUpperCase();
+        var siglaTipoCodigo = lTipo.normalize("NFD").replace(/[\u0300-\u036f\s]/g, "").slice(0, 3).toUpperCase();
+        var codigoAtual = "H2-" + siglaNomeCodigo + "-" + siglaTipoCodigo;
+
+        var codigosArquivos = document.getElementsByClassName("codigosArquivos");
+        var arraycodigosArquivos = Array.from(codigosArquivos);
+        var contadorCodigo = 0;
+        arraycodigosArquivos.forEach(() => {
+          if (arraycodigosArquivos === codigoAtual) {contadorCodigo++;}          
+        });
+
+        var codigoFinal = codigoAtual + contadorCodigo;
+
+        function subtraiStrings(lNome, nomeAirtable) {
+          var resultadoNome = '';        
+          for (var i = 0; i < lNome.length; i++) {
+            if (nomeAirtable.indexOf(lNome[i]) === -1) {
+              resultadoNome += lNome[i];
+            }
+          } 
+          if (resultadoNome == "") {resultadoNome = "Geral";}     
+          return resultadoNome;
+        } subtraiStrings(lNome, nomeAirtable);
+      
         var dadosEnvio = {
           fields: {
             id: idOriginalAirtable,
@@ -379,6 +404,19 @@ function enviarProjeto(idOriginalAirtable) {
             tamanhodafolha: lFolha,
             revisao: revisao,
           },
+        };
+
+        var dadosEmail = {          
+          nome: nomeAirtable,
+          status: statusAirtable,
+          id: lid,
+          cidade: cidadeAirtable,
+          tipo: lTipo,
+          usina: resultadoNome,
+          código: codigoFinal,
+          revisao: revisao,
+          descriçao: descricao,
+
         };
 
         var response = fetch("https://api.airtable.com/v0/appJFXS6s2GGwHKyw/projetosexecutivos",{
@@ -399,8 +437,8 @@ function enviarProjeto(idOriginalAirtable) {
 
             fetch('http://localhost:3000/enviar-email', {
               method: 'POST',
-              headers: {'Content-Type': 'application/json'},        
-            })
+              headers: {'Content-Type': 'application/json'}, 
+              body: JSON.stringify(dadosEmail),})
             .then(resposta => {
               if (resposta.ok) {
                 return resposta.json();
@@ -451,7 +489,8 @@ function receberProjetos(idOriginalAirtable) {
 
       var siglaNome = usinaAirtable
         .normalize("NFD")
-        .replace(/[\u0300-\u036f\s]/g, "");
+        .replace(/[\u0300-\u036f\s]/g, "")
+        .toUpperCase();
       var siglaTipo = tipoAirtable
         .normalize("NFD")
         .replace(/[\u0300-\u036f\s]/g, "")
@@ -465,14 +504,7 @@ function receberProjetos(idOriginalAirtable) {
           contadorProjeto++;
         }
       }
-      var codigoArquivo =
-        "H2-" +
-        siglaNome +
-        "-" +
-        siglaTipo +
-        "-" +
-        (contadorProjeto < 10 ? "0" : "") +
-        contadorProjeto;
+      var codigoArquivo = "H2-" + siglaNome + "-" + siglaTipo + "-" + (contadorProjeto < 10 ? "0" : "") + contadorProjeto;
 
       var folhaMaisRevisao = folhaAirtable + " | " + revisaoAirtable;
 
@@ -482,6 +514,7 @@ function receberProjetos(idOriginalAirtable) {
 
       var codigoProjeto = document.createElement("h5");
       codigoProjeto.innerText = codigoArquivo;
+      codigoProjeto.setAttribute("class", "codigosArquivos");
       pe.appendChild(codigoProjeto);
 
       var tipoProjeto = document.createElement("h5");

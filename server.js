@@ -2,6 +2,9 @@
 const nodemailer = require("nodemailer");
 const express = require('express');
 const app = express();
+const cors = require('cors');
+
+app.use(cors());
 
 app.post('/enviar-email', (req, res) => {
  
