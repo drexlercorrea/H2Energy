@@ -481,6 +481,9 @@ function enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeA
                   throw new Error('Erro na requisição ao servidor de e-mail!');
                 }
               })
+              .then(data => {
+                console.log('Requisição ao servidor de e-mail feita com sucesso!', data);
+              })
               .catch(error => {
                 console.error('Erro na requisição:', error);
               });
