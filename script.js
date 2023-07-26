@@ -371,93 +371,137 @@ function enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeA
         var revisao = document.getElementById("revisao").value;
         var lid = ((idOriginalAirtable - 91) < 10 ? "00" : (idOriginalAirtable - 91) < 100 ? "0" : "") + (idOriginalAirtable - 91);
 
-        var siglaNomeCodigo = lNome.normalize("NFD").replace(/[\u0300-\u036f\s]/g, "").toUpperCase();
-        var siglaTipoCodigo = lTipo.normalize("NFD").replace(/[\u0300-\u036f\s]/g, "").slice(0, 3).toUpperCase();
-        var codigoAtual = "H2-" + siglaNomeCodigo + "-" + siglaTipoCodigo;
+        var siglaNomeEmail = lNome
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f\s]/g, "")
+          .toUpperCase();
+        var siglaTipoEmail = lTipo
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f\s]/g, "")
+          .slice(0, 3)
+          .toUpperCase();
+        var mesmoProjetoEmail = "H2-" + siglaNomeEmail + "-" + siglaTipoEmail;
 
-        var codigosArquivos = document.getElementsByClassName("codigosArquivos");
-        var arraycodigosArquivos = Array.from(codigosArquivos);
-        var contadorCodigo = 0;
-
-        for (var i = 0; i < arraycodigosArquivos.length; i++) {
-          if (arraycodigosArquivos[i] == codigoAtual) {
-            contadorCodigo++;
+        fetch("https://api.airtable.com/v0/appJFXS6s2GGwHKyw/projetosexecutivos?filterByFormula=id%3D" +
+          idOriginalAirtable + "&sortField=data",{method: "GET",
+            headers: {Authorization: "Bearer keyggOsGLubPoGKDd", "Content-Type": "application/json",},
           }
-        }
+        )
+        .then((rd) => {
+          if (!rd.ok) {
+            throw new Error("Erro ao obter os dados");
+          }
+          return rd.json();
+        })
+        .then((data) => {
+          var dadosAirtable = data.records;
 
-        var codigoFinal = codigoAtual + "-" + (contadorCodigo < 10 ? "0" : "") + contadorCodigo;
+          for (let i = 0; i < dadosAirtable.length; i++) {
+            var fieldsAirtable = dadosAirtable[i].fields;
+            var usinaAirtable = fieldsAirtable.nomedausina;
+            var tipoAirtable = fieldsAirtable.tipodeprojeto;
 
-        var resultadoNome = "teste"; 
+            var siglaNomeContador = usinaAirtable
+              .normalize("NFD")
+              .replace(/[\u0300-\u036f\s]/g, "")
+              .toUpperCase();
+            var siglaTipoContador = tipoAirtable
+              .normalize("NFD")
+              .replace(/[\u0300-\u036f\s]/g, "")
+              .slice(0, 3)
+              .toUpperCase();
+            var mesmoProjetoContador = "H2-" + siglaNomeContador + "-" + siglaTipoContador;
 
-/*         function subtraiStrings(lNome, nomeAirtable) {
-          var resultadoNome = '';        
-          for (var i = 0; i < lNome.length; i++) {
-            if (nomeAirtable.indexOf(lNome[i]) === -1) {
-              resultadoNome += lNome[i];
+            projetosIguaisContador.push(mesmoProjetoContador);
+          }           
+          
+          var contadorProjetoEmail = 0;
+          for (var i = 0; i < projetosIguaisContador.length; i++) {
+            if (projetosIguaisContador[i] === mesmoProjetoEmail) {
+              contadorProjetoEmail++;
             }
-          } 
-          if (resultadoNome == "") {resultadoNome = "Geral";}     
-          return resultadoNome;
-        } subtraiStrings(lNome, nomeAirtable); */
-      
-        var dadosEnvio = {
-          fields: {
-            id: idOriginalAirtable,
-            nomedausina: lNome,
-            tipodeprojeto: lTipo,
-            descricao: descricao,
-            tamanhodafolha: lFolha,
-            revisao: revisao,
-          },
-        };
-
-        var dadosEmail = {          
-          nome: nomeAirtable,
-          status: statusAirtable,
-          id: lid,
-          cidade: cidadeAirtable,
-          tipo: lTipo,
-          usina: resultadoNome,
-          codigo: codigoFinal,
-          revisao: revisao,
-          descriçao: descricao,
-        };
-
-        var response = fetch("https://api.airtable.com/v0/appJFXS6s2GGwHKyw/projetosexecutivos",{
-          method: "POST",
-          headers: {Authorization: "Bearer keyggOsGLubPoGKDd", "Content-Type": "application/json",},
-          body: JSON.stringify(dadosEnvio),})
-
-        .then((response) => {
-          if (response.ok) {
-            console.log("Dados enviados com sucesso para o Airtable:",response.data);
-            document.getElementById("listaNome").value = "";
-            document.getElementById("listaTipo").value = "";
-            document.getElementById("descricao").value = "";
-            document.getElementById("listaFolha").value = "";
-            document.getElementById("revisao").value = "";
-            abrirFormularioPrancha();
-            receberProjetos(idOriginalAirtable); 
-
-            fetch('http://localhost:3000/enviar-email', {
-              method: 'POST',
-              headers: {'Content-Type': 'application/json'}, 
-              body: JSON.stringify(dadosEmail),})
-            .then(resposta => {
-              if (resposta.ok) {
-                return resposta.json();
-              } else {
-                throw new Error('Erro ao enviar o e-mail.');
-              }
-            })
-            .then(data => {
-              console.log('E-mail enviado com sucesso!', data);
-            })
-            .catch(error => {
-              console.error('Erro na requisição:', error);
-            });
           }
+
+          var contadorUltimo = contadorProjetoEmail + 1;  
+          var codigoFinalEmail = mesmoProjetoEmail + "-" + (contadorUltimo < 10 ? "0" : "") + contadorUltimo;
+  
+          var resultadoNome = "teste"; 
+  
+  /*         function subtraiStrings(lNome, nomeAirtable) {
+            var resultadoNome = '';        
+            for (var i = 0; i < lNome.length; i++) {
+              if (nomeAirtable.indexOf(lNome[i]) === -1) {
+                resultadoNome += lNome[i];
+              }
+            } 
+            if (resultadoNome == "") {resultadoNome = "Geral";}     
+            return resultadoNome;
+          } subtraiStrings(lNome, nomeAirtable); */
+        
+          var dadosEnvio = {
+            fields: {
+              id: idOriginalAirtable,
+              nomedausina: lNome,
+              tipodeprojeto: lTipo,
+              descricao: descricao,
+              tamanhodafolha: lFolha,
+              revisao: revisao,
+            },
+          };
+  
+          var dadosEmail = {          
+            nome: nomeAirtable,
+            status: statusAirtable,
+            id: lid,
+            cidade: cidadeAirtable,
+            tipo: lTipo,
+            usina: resultadoNome,
+            codigo: codigoFinalEmail,
+            revisao: revisao,
+            descriçao: descricao,
+          };
+  
+          var response = fetch("https://api.airtable.com/v0/appJFXS6s2GGwHKyw/projetosexecutivos",{
+            method: "POST",
+            headers: {Authorization: "Bearer keyggOsGLubPoGKDd", "Content-Type": "application/json",},
+            body: JSON.stringify(dadosEnvio),})
+  
+          .then((response) => {
+            if (response.ok) {
+              console.log("Dados enviados com sucesso para o Airtable:",response.data);
+              document.getElementById("listaNome").value = "";
+              document.getElementById("listaTipo").value = "";
+              document.getElementById("descricao").value = "";
+              document.getElementById("listaFolha").value = "";
+              document.getElementById("revisao").value = "";
+              abrirFormularioPrancha();
+              receberProjetos(idOriginalAirtable); 
+  
+              fetch('http://localhost:3000/enviar-email', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'}, 
+                body: JSON.stringify(dadosEmail),})
+              .then(resposta => {
+                if (resposta.ok) {
+                  return resposta.json();
+                } else {
+                  throw new Error('Erro ao enviar o e-mail.');
+                }
+              })
+              .then(data => {
+                console.log('E-mail enviado com sucesso!', data);
+              })
+              .catch(error => {
+                console.error('Erro na requisição:', error);
+              });
+            }
+          });
+
+        })
+        .catch((error) => {
+          console.error(error);
         });
+
       } catch (error) {
         console.error("Erro ao enviar dados para o Airtable:", error);
       }
