@@ -475,14 +475,14 @@ function enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeA
                 headers: {'Content-Type': 'application/json'}, 
                 body: JSON.stringify(dadosEmail),})
               .then(resposta => {
-                if (resposta.ok) {
+                if (!resposta.ok) {
                   return resposta.json();
                 } else {
                   throw new Error('Erro na requisição ao servidor de e-mail!');
                 }
               })
               .then(data => {
-                console.log('Requisição ao servidor de e-mail feita com sucesso!', data);
+                console.log(data);
               })
               .catch(error => {
                 console.error('Erro na requisição:', error);
