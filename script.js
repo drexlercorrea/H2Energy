@@ -425,18 +425,11 @@ function enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeA
           var contadorUltimo = contadorProjetoEmail + 1;  
           var codigoFinalEmail = mesmoProjetoEmail + "-" + (contadorUltimo < 10 ? "0" : "") + contadorUltimo;
   
-          var resultadoNome = "teste"; 
-  
-  /*         function subtraiStrings(lNome, nomeAirtable) {
-            var resultadoNome = '';        
-            for (var i = 0; i < lNome.length; i++) {
-              if (nomeAirtable.indexOf(lNome[i]) === -1) {
-                resultadoNome += lNome[i];
-              }
-            } 
-            if (resultadoNome == "") {resultadoNome = "Geral";}     
-            return resultadoNome;
-          } subtraiStrings(lNome, nomeAirtable); */
+          if (nomeAirtable === lNome) {
+            var resultadoNome = "Geral";
+          } else {
+            var resultadoNome = lNome.charAt(lNome.length - 1);
+          }           
         
           var dadosEnvio = {
             fields: {
@@ -485,11 +478,8 @@ function enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeA
                 if (resposta.ok) {
                   return resposta.json();
                 } else {
-                  throw new Error('Erro ao enviar o e-mail.');
+                  throw new Error('Erro na requisição ao servidor de e-mail!');
                 }
-              })
-              .then(data => {
-                console.log('E-mail enviado com sucesso!', data);
               })
               .catch(error => {
                 console.error('Erro na requisição:', error);

@@ -54,7 +54,7 @@ app.post('/enviar-email', (req, res) => {
   .then(() => {console.log('E-mail enviado com sucesso!');})
   .catch(console.error);
 
-  res.json("Requisição ao servidor de e-mail finalizada!");
+  res.json("Requisição ao servidor de e-mail feita com sucesso!");
 });
 
 app.listen(3000, () => {
