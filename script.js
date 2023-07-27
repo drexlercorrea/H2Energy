@@ -46,8 +46,7 @@ function campoVazioProjeto() {
     document.getElementById("listaNome").value == "" ||
     document.getElementById("listaTipo").value == "" ||
     document.getElementById("descricao").value == "" ||
-    document.getElementById("listaFolha").value == "" ||
-    document.getElementById("revisao").value == ""
+    document.getElementById("listaFolha").value == ""
   ) {
     var cvp = 1;
   } else {
@@ -325,6 +324,7 @@ function abrirProjeto(nameTagUfv) {
 
           enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeAirtable);
           receberProjetos(idOriginalAirtable);
+          botaoUpload();
         }
       }
     })
@@ -353,6 +353,25 @@ function listaUfvs(nomeAirtable, nUsinasAirtable) {
   }
 }
 
+function botaoUpload() {
+
+  var inputArquivo = document.getElementById('arquivo');
+
+  inputArquivo.addEventListener('change', function() {
+    var arquivoSelecionado = inputArquivo.files[0];
+
+    if (arquivoSelecionado) {
+      var bu = document.getElementById("botaoUpload");
+      bu.style.cssText = "background-color: gray; border-color: gray";
+    }
+  });
+
+
+  
+
+
+}
+
 /* CADASTRO DE PROJETO EXECUTIVO */
 function enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeAirtable) {
   var fp = document.getElementById("formProjeto");
@@ -366,9 +385,10 @@ function enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeA
       try {
         var lNome = document.getElementById("listaNome").value;
         var lTipo = document.getElementById("listaTipo").value;
-        var descricao = document.getElementById("descricao").value;
+        var ldescricao = document.getElementById("descricao").value;
         var lFolha = document.getElementById("listaFolha").value;
-        var revisao = document.getElementById("revisao").value;
+        var lrevisao = "00";
+        var arquivoForm = document.getElementById('arquivo').files[0];
         var lid = ((idOriginalAirtable - 91) < 10 ? "00" : (idOriginalAirtable - 91) < 100 ? "0" : "") + (idOriginalAirtable - 91);
 
         var siglaNomeEmail = lNome
@@ -429,31 +449,31 @@ function enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeA
             var resultadoNome = "Geral";
           } else {
             var resultadoNome = lNome.charAt(lNome.length - 1);
-          }           
+          }
         
           var dadosEnvio = {
             fields: {
               id: idOriginalAirtable,
               nomedausina: lNome,
               tipodeprojeto: lTipo,
-              descricao: descricao,
+              descricao: ldescricao,
               tamanhodafolha: lFolha,
-              revisao: revisao,
+              revisao: lrevisao,
             },
           };
-  
-          var dadosEmail = {          
-            nome: nomeAirtable,
-            status: statusAirtable,
-            id: lid,
-            cidade: cidadeAirtable,
-            tipo: lTipo,
-            usina: resultadoNome,
-            codigo: codigoFinalEmail,
-            revisao: revisao,
-            descriçao: descricao,
-          };
-  
+
+          const dadosEmail = new FormData();
+          dadosEmail.append('nome', nomeAirtable);
+          dadosEmail.append('status', statusAirtable);
+          dadosEmail.append('id', lid);
+          dadosEmail.append('cidade', cidadeAirtable);
+          dadosEmail.append('tipo', lTipo);
+          dadosEmail.append('usina', resultadoNome);
+          dadosEmail.append('codigo', codigoFinalEmail);
+          dadosEmail.append('revisao', lrevisao);
+          dadosEmail.append('descricao', ldescricao);
+          dadosEmail.append('arquivo', arquivoForm);
+ 
           var response = fetch("https://api.airtable.com/v0/appJFXS6s2GGwHKyw/projetosexecutivos",{
             method: "POST",
             headers: {Authorization: "Bearer keyggOsGLubPoGKDd", "Content-Type": "application/json",},
@@ -466,26 +486,25 @@ function enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeA
               document.getElementById("listaTipo").value = "";
               document.getElementById("descricao").value = "";
               document.getElementById("listaFolha").value = "";
-              document.getElementById("revisao").value = "";
               abrirFormularioPrancha();
               receberProjetos(idOriginalAirtable); 
   
               fetch('http://localhost:3000/enviar-email', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'}, 
-                body: JSON.stringify(dadosEmail),})
+                body: dadosEmail})
               .then(resposta => {
-                if (!resposta.ok) {
+                if (resposta.ok) {                  
                   return resposta.json();
                 } else {
                   throw new Error('Erro na requisição ao servidor de e-mail!');
                 }
               })
-              .then(data => {
+              .then(data => {                
                 console.log(data);
+                alert("Projeto cadastrado com sucesso!");
               })
               .catch(error => {
-                console.error('Erro na requisição:', error);
+                console.error(error);
               });
             }
           });

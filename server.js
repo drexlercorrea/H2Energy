@@ -3,17 +3,29 @@ const nodemailer = require("nodemailer");
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const bodyParser = require('body-parser');
+const multer = require('multer');
+const path = require('path');
 
 app.use(cors());
 
-app.use(bodyParser.json());
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  }
+});
 
-app.post('/enviar-email', (req, res) => {
+const upload = multer({ storage: storage });
+
+app.post('/enviar-email', upload.single('arquivo'), (req, res) => {
   const dadosFront = req.body;
+  const arquivo = req.file;
+  console.log(dadosFront.descriçao);
 
   /* ENVIAR EMAIL AO CADASTRAR UM PROJETO EXECUTIVO */
-  async function enviarEmail(dadosFront) {
+  async function enviarEmail(dadosFront, arquivo) {
     const nome = dadosFront.nome;
     const status = dadosFront.status;
     const id = dadosFront.id;
@@ -22,7 +34,7 @@ app.post('/enviar-email', (req, res) => {
     const usina = dadosFront.usina;
     const codigo = dadosFront.codigo;
     const revisao = dadosFront.revisao;
-    const descriçao = dadosFront.descriçao;
+    const descricao = dadosFront.descricao;
 
     let transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
@@ -36,7 +48,7 @@ app.post('/enviar-email', (req, res) => {
       '<html> <b>* Mensagem automática. Não responda esse e-mail. *</b> <p>________________________________________________________________________</p> <p>Um novo projeto executivo foi cadastrado. Segue os dados abaixo:</p> <b style= "text-decoration: underline;">'
       + nome + '</b> <li>ID: ' + id + ';</li> <li>Cidade: ' + cidade + ';</li> <li>Tipo: ' + tipo +
       ';</li> <li>Usina: ' + usina + ';</li> <li>Código: ' + codigo + ';</li> <li>Revisão: ' + revisao +
-      ';</li> <li>Descrição: ' + descriçao +
+      ';</li> <li>Descrição: ' + descricao +
       '.</li> <p>________________________________________________________________________</p>  <b>* DOCUMENTO EM ANEXO *</b> </html>';
 
     let info = await transporter.sendMail({
@@ -44,13 +56,17 @@ app.post('/enviar-email', (req, res) => {
       to: "drexlercorrea@hotmail.com",
       /* cc: "", */
       subject: 'Novo Projeto Executivo | ' + nome + ' | Status: ' + status,
-      html: corpoEmail,
+      html: corpoEmail,      
+      attachments: [{
+        filename: arquivo.originalname,
+        path: path.resolve(__dirname, 'uploads', arquivo.filename)
+      }]      
     });
 
     console.log("Message sent: %s", info.messageId);
 
   }   
-  enviarEmail(dadosFront)
+  enviarEmail(dadosFront, arquivo)
   .then(() => {console.log('E-mail enviado com sucesso!');})
   .catch(console.error);
 
