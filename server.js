@@ -53,7 +53,7 @@ app.post('/enviar-email', upload.single('arquivo'), (req, res) => {
 
     let info = await transporter.sendMail({
       from: "drexlervc@gmail.com",
-      to: "drexlercorrea@hotmail.com",
+      to: "drexler.correa@h2energy.com.br",
       /* cc: "", */
       subject: 'Novo Projeto Executivo | ' + nome + ' | Status: ' + status,
       html: corpoEmail,      
