@@ -365,11 +365,6 @@ function botaoUpload() {
       bu.style.cssText = "background-color: gray; border-color: gray";
     }
   });
-
-
-  
-
-
 }
 
 /* CADASTRO DE PROJETO EXECUTIVO */

@@ -5,12 +5,35 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAjkIX1MxO1vktDrtxsSDEu6I5sWuNUWj8",
+      authDomain: "h2energy-f88b9.firebaseapp.com",
+      projectId: "h2energy-f88b9",
+      storageBucket: "h2energy-f88b9.appspot.com",
+      messagingSenderId: "813618184142",
+      appId: "1:813618184142:web:b27bc024a9d1c86ab5759f",
+      measurementId: "G-F6FGKDEPLQ"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        console.log("Usuário credenciado!");
+      } else {
+        window.location.href = "/login/login.html";    
+      }
+    });
+  </script>
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="/imagens/logo.png">
   <script src="https://kit.fontawesome.com/b182c006ab.js" crossorigin="anonymous"></script>
-  <script type="text/javascript" src="script.js"></script>
   <script type="text/javascript" src="package-lock.json"></script>
   <script type="text/javascript" src="package.json"></script>
+  <script type="text/javascript" src="script.js"></script>
   <title>H2App</title>
 </head>
 
