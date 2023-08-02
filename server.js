@@ -5,6 +5,7 @@ const app = express();
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
+const fs = require("fs");
 
 app.use(cors());
 
@@ -22,7 +23,6 @@ const upload = multer({ storage: storage });
 app.post('/enviar-email', upload.single('arquivo'), (req, res) => {
   const dadosFront = req.body;
   const arquivo = req.file;
-  console.log(dadosFront.descriçao);
 
   /* ENVIAR EMAIL AO CADASTRAR UM PROJETO EXECUTIVO */
   async function enviarEmail(dadosFront, arquivo) {
@@ -35,6 +35,10 @@ app.post('/enviar-email', upload.single('arquivo'), (req, res) => {
     const codigo = dadosFront.codigo;
     const revisao = dadosFront.revisao;
     const descricao = dadosFront.descricao;
+
+    const extensao = path.extname(arquivo.originalname);
+    const nomedoArquivo = codigo + "_rv" + revisao + extensao;
+    const caminhoArquivo = path.resolve(__dirname, 'uploads', arquivo.filename);
 
     let transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
@@ -53,17 +57,25 @@ app.post('/enviar-email', upload.single('arquivo'), (req, res) => {
 
     let info = await transporter.sendMail({
       from: "drexlervc@gmail.com",
-      to: "drexler.correa@h2energy.com.br",
+      to: "drexler.correa@h2energy.com.br, ubiratan.franco@h2energy.com.br, gabriel.silva@h2energy.com.br, luciano.massaroto@h2energy.com.br, mirian.silva@h2energy.com.br",      
       /* cc: "", */
       subject: 'Novo Projeto Executivo | ' + nome + ' | Status: ' + status,
       html: corpoEmail,      
       attachments: [{
-        filename: arquivo.originalname,
-        path: path.resolve(__dirname, 'uploads', arquivo.filename)
+        filename: nomedoArquivo,
+        path: caminhoArquivo
       }]      
     });
 
     console.log("Message sent: %s", info.messageId);
+
+    fs.unlink(caminhoArquivo, (err) => {
+      if (err) {
+        console.error("Erro ao excluir o arquivo: ", err);
+      } else {
+        console.log("Arquivo excluído com sucesso!");
+      }
+    })
 
   }   
   enviarEmail(dadosFront, arquivo)

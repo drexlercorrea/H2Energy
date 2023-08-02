@@ -135,7 +135,7 @@ function receberDados() {
       var dadosAirtable = data.records;
 
       function preencherTabela() {
-        var idpAirtable = fieldsAirtable.idprojeto - 101;
+        var idpAirtable = fieldsAirtable.idprojeto - 105;
         var nomeAirtable = fieldsAirtable.nomedaufv;
         var potenciaAirtable = fieldsAirtable.potencia;
         var cidadeAirtable = fieldsAirtable.cidadeuf;
@@ -246,7 +246,7 @@ function abrirProjeto(nameTagUfv) {
         var nomeAirtable = fieldsAirtable.nomedaufv;
 
         if (nomeAirtable == nameTagUfv) {
-          var idpAirtable = fieldsAirtable.idprojeto - 101;
+          var idpAirtable = fieldsAirtable.idprojeto - 105;
           var idOriginalAirtable = fieldsAirtable.idprojeto;
           var potenciaAirtable = fieldsAirtable.potencia;
           var cidadeAirtable = fieldsAirtable.cidadeuf;
@@ -384,7 +384,7 @@ function enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeA
         var lFolha = document.getElementById("listaFolha").value;
         var lrevisao = "00";
         var arquivoForm = document.getElementById('arquivo').files[0];
-        var lid = ((idOriginalAirtable - 101) < 10 ? "00" : (idOriginalAirtable - 101) < 100 ? "0" : "") + (idOriginalAirtable - 101);
+        var lid = ((idOriginalAirtable - 105) < 10 ? "00" : (idOriginalAirtable - 105) < 100 ? "0" : "") + (idOriginalAirtable - 105);
 
         var siglaNomeEmail = lNome
           .normalize("NFD")
@@ -481,6 +481,7 @@ function enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeA
               document.getElementById("listaTipo").value = "";
               document.getElementById("descricao").value = "";
               document.getElementById("listaFolha").value = "";
+              document.getElementById('arquivo').files[0] = "";
               abrirFormularioPrancha();
               receberProjetos(idOriginalAirtable); 
   
