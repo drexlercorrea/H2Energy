@@ -57,7 +57,7 @@ app.post('/enviar-email', upload.single('arquivo'), (req, res) => {
 
     let info = await transporter.sendMail({
       from: "drexlervc@gmail.com",
-      to: "drexler.correa@h2energy.com.br, ubiratan.franco@h2energy.com.br, gabriel.silva@h2energy.com.br, luciano.massaroto@h2energy.com.br, mirian.silva@h2energy.com.br",      
+      to: "drexler.correa@h2energy.com.br", /* ubiratan.franco@h2energy.com.br, gabriel.silva@h2energy.com.br, luciano.massaroto@h2energy.com.br */      
       /* cc: "", */
       subject: 'Novo Projeto Executivo | ' + nome + ' | Status: ' + status,
       html: corpoEmail,      

@@ -54,6 +54,20 @@ function campoVazioProjeto() {
   }
   return cvp;
 }
+function campoVazioModal() {
+  if (
+    document.getElementById("modalUFV").value == "" ||
+    document.getElementById("modalPotencia").value == "" ||
+    document.getElementById("modalCidade").value == "" ||
+    document.getElementById("modalUsinas").value == "" ||
+    document.getElementById("modalStatus").value == ""
+  ) {
+    var cvm = 1;
+  } else {
+    var cvm = 2;
+  }
+  return cvm;
+}
 
 /* CADASTRO DE NOVO PROJETO */
 function enviarFormulario() {
@@ -66,46 +80,79 @@ function enviarFormulario() {
       alert("Preencha todos os campos!");
     } else {
       try {
-        var fNome = document.getElementById("nome").value;
-        var fPotencia = document.getElementById("potencia").value;
-        var fCidade = document.getElementById("cidade").value;
-        var fUsinas = document.getElementById("usinas").value;
-        var fStatus = document.getElementById("status").value;
-        var dadosEnvio = {
-          fields: {
-            nomedaufv: fNome,
-            potencia: fPotencia,
-            cidadeuf: fCidade,
-            ndeusinas: fUsinas,
-            status: fStatus,
-          },
-        };
 
-        var response = fetch(
-          "https://api.airtable.com/v0/app9EDXVbU7QhtUiF/gestaodeprojetos",
+        fetch("https://api.airtable.com/v0/app9EDXVbU7QhtUiF/gestaodeprojetos?sortField=idprojeto&fields[]=idufv",
           {
-            method: "POST",
+            method: "GET",
             headers: {
               Authorization: "Bearer keyggOsGLubPoGKDd",
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(dadosEnvio),
           }
-        ).then((response) => {
-          if (response.ok) {
-            console.log(
-              "Dados enviados com sucesso para o Airtable:",
-              response.data
-            );
-            document.getElementById("nome").value = "";
-            document.getElementById("potencia").value = "";
-            document.getElementById("cidade").value = "";
-            document.getElementById("usinas").value = "";
-            document.getElementById("status").value = "";
-            abrirFormulario();
-            receberDados();
+        )
+        .then((rd) => {
+          if (!rd.ok) {
+            throw new Error("Erro ao obter os dados");
           }
+          return rd.json();
+        })
+        .then((data) => {
+          var dadosAirtable = data.records;
+          var ultimoEnviado = dadosAirtable.length - 1;
+
+          if (ultimoEnviado == -1) { 
+            var idNovo = 1; 
+
+          } else {
+            var fieldsAirtable = dadosAirtable[ultimoEnviado].fields;
+            var ultimoId = fieldsAirtable.idufv;
+            var idNovo = ultimoId + 1;               
+          }
+               
+          var fNome = document.getElementById("nome").value;
+          var fPotencia = document.getElementById("potencia").value;
+          var fCidade = document.getElementById("cidade").value;
+          var fUsinas = document.getElementById("usinas").value;
+          var fStatus = document.getElementById("status").value;
+          var dadosEnvio = {
+            fields: {
+              idufv: idNovo,
+              nomedaufv: fNome,
+              potencia: fPotencia,
+              cidadeuf: fCidade,
+              ndeusinas: fUsinas,
+              status: fStatus,
+            },
+          };
+  
+          var response = fetch(
+            "https://api.airtable.com/v0/app9EDXVbU7QhtUiF/gestaodeprojetos",
+            {
+              method: "POST",
+              headers: {
+                Authorization: "Bearer keyggOsGLubPoGKDd",
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(dadosEnvio),
+            }
+          ).then((response) => {
+            if (response.ok) {
+              console.log("Dados enviados com sucesso para o Airtable:", response.data);
+              document.getElementById("nome").value = "";
+              document.getElementById("potencia").value = "";
+              document.getElementById("cidade").value = "";
+              document.getElementById("usinas").value = "";
+              document.getElementById("status").value = "";  
+              abrirFormulario();   
+              var formularioEnviado = 2; receberDados(formularioEnviado);             
+            }
+          }) 
+        })
+        
+        .catch((error) => {
+          console.error(error);
         });
+
       } catch (error) {
         console.error("Erro ao enviar dados para o Airtable:", error);
       }
@@ -114,8 +161,8 @@ function enviarFormulario() {
 }
 
 /* OBTER DADOS DAS UFV's CADASTRADAS */
-function receberDados() {
-  fetch("https://api.airtable.com/v0/app9EDXVbU7QhtUiF/gestaodeprojetos?sortField=idprojeto",
+function receberDados(formularioEnviado) {
+  fetch("https://api.airtable.com/v0/app9EDXVbU7QhtUiF/gestaodeprojetos?sortField=idprojeto&sortDirection=desc",
     {
       method: "GET",
       headers: {
@@ -134,8 +181,22 @@ function receberDados() {
       var p1 = document.getElementById("projeto1");
       var dadosAirtable = data.records;
 
+      var valoresUnicos = {};
+      var valoresChaves = {};
+
+      for (let i = 0; i < dadosAirtable.length; i++) {
+        var valoridp = dadosAirtable[i].fields.idprojeto;
+        var valoridu = dadosAirtable[i].fields.idufv;
+
+        if (!valoresUnicos[valoridu]) {
+          valoresUnicos[valoridu] = valoridp;
+          valoresChaves[valoridu] = i;
+        }   
+      } var tamanhovc = Object.keys(valoresChaves).length;
+
       function preencherTabela() {
-        var idpAirtable = fieldsAirtable.idprojeto - 105;
+        var idoAirtable = fieldsAirtable.idprojeto;
+        var idpAirtable = fieldsAirtable.idufv;
         var nomeAirtable = fieldsAirtable.nomedaufv;
         var potenciaAirtable = fieldsAirtable.potencia;
         var cidadeAirtable = fieldsAirtable.cidadeuf;
@@ -156,14 +217,13 @@ function receberDados() {
         nome.setAttribute("href", "#");
         nome.setAttribute("id", nomeAirtable);
         nome.addEventListener("click", function (event) {
-          var nameTagUfv = event.target.id;
-          abrirProjeto(nameTagUfv);
+          abrirProjeto(idoAirtable);
           listaUfvs(nomeAirtable, nUsinasAirtable);
         });
         p1.appendChild(nome);
 
         var potencia = document.createElement("h5");
-        potencia.innerText = potenciaAirtable;
+        potencia.innerText = potenciaAirtable + " MW";
         p1.appendChild(potencia);
 
         var cidade = document.createElement("h5");
@@ -192,16 +252,21 @@ function receberDados() {
       }
 
       if (formularioEnviado !== 2) {
-        for (let i = 0; i < dadosAirtable.length; i++) {
-          var fieldsAirtable = dadosAirtable[i].fields;
-          preencherTabela();
+        for (let i = 1; i <= tamanhovc; i++) {
+          var v = valoresChaves[i];
+          var valoridp = dadosAirtable[v].fields.idprojeto;
+          var valoridu = dadosAirtable[v].fields.idufv;
+  
+          if (valoresUnicos[valoridu] == valoridp) {
+            var fieldsAirtable = dadosAirtable[v].fields;
+            preencherTabela();   
+          }      
         }
+
       } else {
-        var ultimoEnviado = dadosAirtable.length - 1;
-        var fieldsAirtable = dadosAirtable[ultimoEnviado].fields;
+        var fieldsAirtable = dadosAirtable[0].fields;
         preencherTabela();
       }
-      return (formularioEnviado = 2);
     })
     .catch((error) => {
       console.error(error);
@@ -209,7 +274,7 @@ function receberDados() {
 }
 
 /* ENTRAR NA UFV */
-function abrirProjeto(nameTagUfv) {
+function abrirProjeto(idoAirtable) {
   var bnp = document.getElementById("botãoNovoprojeto");
   var cad = document.getElementById("cadastro");
   var tp = document.getElementById("tabelaProjetos");
@@ -243,11 +308,11 @@ function abrirProjeto(nameTagUfv) {
 
       for (let i = 0; i < dadosAirtable.length; i++) {
         var fieldsAirtable = dadosAirtable[i].fields;
-        var nomeAirtable = fieldsAirtable.nomedaufv;
+        var idaAirtable = fieldsAirtable.idprojeto;
 
-        if (nomeAirtable == nameTagUfv) {
-          var idpAirtable = fieldsAirtable.idprojeto - 105;
-          var idOriginalAirtable = fieldsAirtable.idprojeto;
+        if (idaAirtable == idoAirtable) {   
+          var idpAirtable = fieldsAirtable.idufv;       
+          var nomeAirtable = fieldsAirtable.nomedaufv;
           var potenciaAirtable = fieldsAirtable.potencia;
           var cidadeAirtable = fieldsAirtable.cidadeuf;
           var nUsinasAirtable = fieldsAirtable.ndeusinas;
@@ -259,14 +324,25 @@ function abrirProjeto(nameTagUfv) {
           var divReferencia = pc.children[0];
           pc.insertBefore(nomeUfv, divReferencia);
 
+          var atualizarUFV = document.createElement("i");
+          atualizarUFV.setAttribute("class", "fa-solid fa-marker");
+          atualizarUFV.setAttribute("title", "Atualizar UFV");
+          atualizarUFV.addEventListener("click", function (event) {
+            editarUFV(nomeAirtable, idpAirtable, potenciaAirtable, cidadeAirtable, nUsinasAirtable, statusAirtable);
+          });
+          pc.insertBefore(atualizarUFV, divReferencia);
+
+          var delUFV = document.createElement("i");
+          delUFV.setAttribute("class", "fa-solid fa-trash");
+          delUFV.setAttribute("title", "Deletar UFV");
+          pc.insertBefore(delUFV, divReferencia);
+
           var idTexto = document.createElement("h4");
           idTexto.innerText = "ID:";
           dp.appendChild(idTexto);
 
           var idUfv = document.createElement("h5");
-          var idFormatado =
-            (idpAirtable < 10 ? "00" : idpAirtable < 100 ? "0" : "") +
-            idpAirtable;
+          var idFormatado = (idpAirtable < 10 ? "00" : idpAirtable < 100 ? "0" : "") + idpAirtable;
           idUfv.innerText = idFormatado;
           dp.appendChild(idUfv);
 
@@ -275,7 +351,7 @@ function abrirProjeto(nameTagUfv) {
           dp.appendChild(potenciaTexto);
 
           var potenciaUfv = document.createElement("h5");
-          potenciaUfv.innerText = potenciaAirtable;
+          potenciaUfv.innerText = potenciaAirtable + " MW";
           dp.appendChild(potenciaUfv);
 
           var cidadeTexto = document.createElement("h4");
@@ -311,19 +387,12 @@ function abrirProjeto(nameTagUfv) {
           var dia = dataAtual.getUTCDate();
           var mes = dataAtual.getUTCMonth() + 1;
           var ano = dataAtual.getUTCFullYear();
-          var dataFormatada =
-            (dia < 10 ? "0" : "") +
-            dia +
-            "/" +
-            (mes < 10 ? "0" : "") +
-            mes +
-            "/" +
-            ano;
+          var dataFormatada = (dia < 10 ? "0" : "") + dia + "/" + (mes < 10 ? "0" : "") + mes + "/" + ano;
           dataUfv.innerText = dataFormatada;
           dp.appendChild(dataUfv);
 
-          enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeAirtable);
-          receberProjetos(idOriginalAirtable);
+          enviarProjeto(idpAirtable, nomeAirtable, statusAirtable, cidadeAirtable);
+          receberProjetos(idpAirtable);
           botaoUpload();
         }
       }
@@ -354,7 +423,6 @@ function listaUfvs(nomeAirtable, nUsinasAirtable) {
 }
 
 function botaoUpload() {
-
   var inputArquivo = document.getElementById('arquivo');
 
   inputArquivo.addEventListener('change', function() {
@@ -368,7 +436,7 @@ function botaoUpload() {
 }
 
 /* CADASTRO DE PROJETO EXECUTIVO */
-function enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeAirtable) {
+function enviarProjeto(idpAirtable, nomeAirtable, statusAirtable, cidadeAirtable) {
   var fp = document.getElementById("formProjeto");
   fp.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -384,7 +452,7 @@ function enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeA
         var lFolha = document.getElementById("listaFolha").value;
         var lrevisao = "00";
         var arquivoForm = document.getElementById('arquivo').files[0];
-        var lid = ((idOriginalAirtable - 105) < 10 ? "00" : (idOriginalAirtable - 105) < 100 ? "0" : "") + (idOriginalAirtable - 105);
+        var lid = (idpAirtable < 10 ? "00" : idpAirtable < 100 ? "0" : "") + idpAirtable;
 
         var siglaNomeEmail = lNome
           .normalize("NFD")
@@ -398,7 +466,7 @@ function enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeA
         var mesmoProjetoEmail = "H2-" + siglaNomeEmail + "-" + siglaTipoEmail;
 
         fetch("https://api.airtable.com/v0/appJFXS6s2GGwHKyw/projetosexecutivos?filterByFormula=id%3D" +
-          idOriginalAirtable + "&sortField=data",{method: "GET",
+          idpAirtable + "&sortField=data",{method: "GET",
             headers: {Authorization: "Bearer keyggOsGLubPoGKDd", "Content-Type": "application/json",},
           }
         )
@@ -448,7 +516,7 @@ function enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeA
         
           var dadosEnvio = {
             fields: {
-              id: idOriginalAirtable,
+              id: idpAirtable,
               nomedausina: lNome,
               tipodeprojeto: lTipo,
               descricao: ldescricao,
@@ -483,7 +551,7 @@ function enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeA
               document.getElementById("listaFolha").value = "";
               document.getElementById('arquivo').files[0] = "";
               abrirFormularioPrancha();
-              receberProjetos(idOriginalAirtable); 
+              receberProjetos(idpAirtable); 
   
               fetch('http://localhost:3000/enviar-email', {
                 method: 'POST',
@@ -518,9 +586,9 @@ function enviarProjeto(idOriginalAirtable, nomeAirtable, statusAirtable, cidadeA
 }
 
 /* OBTER DADOS DOS PROJETOS EXECUTIVOS CADASTRADOS */
-function receberProjetos(idOriginalAirtable) {
+function receberProjetos(idpAirtable) {
   fetch("https://api.airtable.com/v0/appJFXS6s2GGwHKyw/projetosexecutivos?filterByFormula=id%3D" +
-    idOriginalAirtable + "&sortField=data",{method: "GET",
+    idpAirtable + "&sortField=data", {method: "GET",
       headers: {Authorization: "Bearer keyggOsGLubPoGKDd", "Content-Type": "application/json",},
     }
   )
@@ -621,5 +689,216 @@ function receberProjetos(idOriginalAirtable) {
   })
   .catch((error) => {
     console.error(error);
+  });
+}
+
+/* EDITAR OS DADOS DA UFV */
+function editarUFV(nomeAirtable, idpAirtable, potenciaAirtable, cidadeAirtable, nUsinasAirtable, statusAirtable) {
+  var modal = document.createElement("div");
+  modal.setAttribute("class", "modal")
+  modal.setAttribute("id", "modal")
+  document.body.appendChild(modal);
+
+  var modalBox = document.createElement("div");
+  modalBox.setAttribute("class", "modalBox")
+  modalBox.setAttribute("id", "modalBox")
+  modal.appendChild(modalBox);
+
+  var modalFechar = document.createElement("span");
+  modalFechar.setAttribute("class", "modalFechar")
+  modalFechar.setAttribute("id", "modalFechar")
+  modalFechar.innerText = "X";
+  modalFechar.setAttribute("title", "Fechar");
+  modalFechar.addEventListener("click", fecharModal);
+  modalBox.appendChild(modalFechar);
+
+  function fecharModal() {
+    var modal = document.querySelector(".modal");
+    if (modal) {
+      modal.remove();
+    }
+  }
+
+  var modalForm = document.createElement("form");
+  modalForm.setAttribute("class", "modalForm")
+  modalForm.setAttribute("id", "modalForm")
+  modalBox.appendChild(modalForm);
+
+  div1 = document.createElement("div");
+  div1.setAttribute("class", "modalDiv");
+  modalForm.appendChild(div1);
+
+  label1 = document.createElement("label");
+  label1.setAttribute("for", "modalUFV");
+  label1.setAttribute("class", "modalLabel");
+  label1.innerText = "Nome da UFV: ";
+  div1.appendChild(label1);
+
+  modalUFV = document.createElement("input");
+  modalUFV.setAttribute("class", "modalInput");
+  modalUFV.setAttribute("id", "modalUFV");
+  modalUFV.setAttribute("name", "modalUFV");
+  modalUFV.setAttribute("type", "text");
+  modalUFV.setAttribute("value", nomeAirtable);
+  modalUFV.setAttribute("autocomplete", "off");
+  div1.appendChild(modalUFV);
+
+  div2 = document.createElement("div");
+  div2.setAttribute("class", "modalDiv");
+  modalForm.appendChild(div2);
+
+  label2 = document.createElement("label");
+  label2.setAttribute("for", "modalPotencia");
+  label2.setAttribute("class", "modalLabel");
+  label2.innerText = "Potência (MW): ";
+  div2.appendChild(label2);
+
+  modalPotencia = document.createElement("input");
+  modalPotencia.setAttribute("class", "modalInput");
+  modalPotencia.setAttribute("id", "modalPotencia");
+  modalPotencia.setAttribute("name", "modalPotencia");
+  modalPotencia.setAttribute("type", "number");
+  modalPotencia.setAttribute("value", potenciaAirtable);
+  modalPotencia.setAttribute("autocomplete", "off");
+  modalPotencia.setAttribute("step", "0.1");
+  div2.appendChild(modalPotencia);
+
+  div3 = document.createElement("div");
+  div3.setAttribute("class", "modalDiv");
+  modalForm.appendChild(div3);
+
+  label3 = document.createElement("label");
+  label3.setAttribute("for", "modalCidade");
+  label3.setAttribute("class", "modalLabel");
+  label3.innerText = "Cidade/ES: ";
+  div3.appendChild(label3);
+
+  modalCidade = document.createElement("input");
+  modalCidade.setAttribute("class", "modalInput");
+  modalCidade.setAttribute("id", "modalCidade");
+  modalCidade.setAttribute("name", "modalCidade");
+  modalCidade.setAttribute("type", "text");
+  modalCidade.setAttribute("value", cidadeAirtable);
+  modalCidade.setAttribute("autocomplete", "off");
+  div3.appendChild(modalCidade);
+
+  div4 = document.createElement("div");
+  div4.setAttribute("class", "modalDiv");
+  modalForm.appendChild(div4);
+
+  label4 = document.createElement("label");
+  label4.setAttribute("for", "modalUsinas");
+  label4.setAttribute("class", "modalLabel");
+  label4.innerText = "Nº de Usinas: ";
+  div4.appendChild(label4);
+
+  modalUsinas = document.createElement("input");
+  modalUsinas.setAttribute("class", "modalInput");
+  modalUsinas.setAttribute("id", "modalUsinas");
+  modalUsinas.setAttribute("name", "modalUsinas");
+  modalUsinas.setAttribute("type", "number");
+  modalUsinas.setAttribute("value", nUsinasAirtable);
+  modalUsinas.setAttribute("autocomplete", "off");
+  div4.appendChild(modalUsinas);
+
+  div5 = document.createElement("div");
+  div5.setAttribute("class", "modalDiv");
+  modalForm.appendChild(div5);
+
+  label5 = document.createElement("label");
+  label5.setAttribute("for", "modalStatus");
+  label5.setAttribute("class", "modalLabel");
+  label5.innerText = "Status: ";
+  div5.appendChild(label5);
+
+  modalStatus = document.createElement("input");
+  modalStatus.setAttribute("class", "modalInput");
+  modalStatus.setAttribute("id", "modalStatus");
+  modalStatus.setAttribute("name", "modalStatus");
+  modalStatus.setAttribute("list", "modal-status");
+  modalStatus.setAttribute("value", statusAirtable);
+  modalStatus.setAttribute("autocomplete", "off");
+  div5.appendChild(modalStatus);
+
+  modalDatalist = document.createElement("datalist");
+  modalDatalist.setAttribute("id", "modal-status");
+  div5.appendChild(modalDatalist);
+
+  lista1 = document.createElement("option");
+  lista1.setAttribute("value", "Liberado para projeto");
+  modalDatalist.appendChild(lista1);
+
+  lista2 = document.createElement("option");
+  lista2.setAttribute("value", "Obra em execução");
+  modalDatalist.appendChild(lista2);
+
+  lista3 = document.createElement("option");
+  lista3.setAttribute("value", "As built");
+  modalDatalist.appendChild(lista3);
+
+  lista4 = document.createElement("option");
+  lista4.setAttribute("value", "Concluído");
+  modalDatalist.appendChild(lista4);
+
+  div6 = document.createElement("div");
+  div6.setAttribute("class", "modalDiv");
+  modalForm.appendChild(div6);
+
+  modalEnviar = document.createElement("button");
+  modalEnviar.setAttribute("class", "modalEnviar");
+  modalEnviar.setAttribute("id", "modalEnviar");
+  modalEnviar.setAttribute("type", "submit");
+  modalEnviar.setAttribute("title", "Enviar atualização");
+  modalEnviar.innerText = "Atualizar";
+  div6.appendChild(modalEnviar);
+
+  modalForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    var fcvm = campoVazioModal();
+    if (fcvm !== 2) {
+      alert("Preencha todos os campos!");
+    } else {
+      try {
+        var fNomeModal = document.getElementById("modalUFV").value;
+        var fPotenciaModal = document.getElementById("modalPotencia").value;
+        var fCidadeModal = document.getElementById("modalCidade").value;
+        var fUsinasModal = document.getElementById("modalUsinas").value;
+        var fStatusModal = document.getElementById("modalStatus").value;
+        var dadosModal = {
+          fields: {
+            idufv: idpAirtable,
+            nomedaufv: fNomeModal,
+            potencia: fPotenciaModal,
+            cidadeuf: fCidadeModal,
+            ndeusinas: fUsinasModal,
+            status: fStatusModal,
+          },
+        };
+
+        var response = fetch(
+          "https://api.airtable.com/v0/app9EDXVbU7QhtUiF/gestaodeprojetos",
+          {
+            method: "POST",
+            headers: {
+              Authorization: "Bearer keyggOsGLubPoGKDd",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(dadosModal),
+          }
+        ).then((response) => {
+          if (response.ok) {
+            console.log(
+              "Dados enviados com sucesso para o Airtable:",
+              response.data
+            );
+            fecharModal();
+            abrirProjeto(nameTagUfv);
+          }
+        });
+      } catch (error) {
+        console.error("Erro ao enviar dados para o Airtable:", error);
+      }
+    }
   });
 }
