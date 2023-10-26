@@ -98,14 +98,20 @@ function enviarFormulario() {
         })
         .then((data) => {
           var dadosAirtable = data.records;
-          var ultimoEnviado = dadosAirtable.length - 1;
+          var valoresUnicos = {};
+    
+          for (let i = 0; i < dadosAirtable.length; i++) {
+            var valoridu = dadosAirtable[i].fields.idufv;    
+            if (!valoresUnicos[valoridu]) {
+              valoresUnicos[valoridu] = valoridu;
+            }   
+          } var tamanhovu = Object.keys(valoresUnicos).length;
 
-          if (ultimoEnviado == -1) { 
+          if (tamanhovu == 0) { 
             var idNovo = 1; 
 
           } else {
-            var fieldsAirtable = dadosAirtable[ultimoEnviado].fields;
-            var ultimoId = fieldsAirtable.idufv;
+            var ultimoId = valoresUnicos[tamanhovu];
             var idNovo = ultimoId + 1;               
           }
                
