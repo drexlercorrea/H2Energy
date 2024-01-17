@@ -209,7 +209,7 @@ label {
   cursor: pointer;
   padding: 10px;
 }
-  
+
 .fa-marker {
   justify-self: left;
 }
@@ -217,8 +217,8 @@ label {
 .modal {
   display: block;
   position: fixed;
-  top: 0;
-  left: 0;
+  top: 0px;
+  left: 0px;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.7);
@@ -227,10 +227,10 @@ label {
 .modalBox {
   background-color: #fff;
   width: 350px;
-  height: 478px;
+  height: 488px;
   top: 50%;
   left: 50%;
-  margin: -239px -175px;
+  margin: -244px -175px;
   position: absolute;
   border-radius: 5px;
 }
@@ -279,4 +279,51 @@ label {
   font-size: 16px;
   font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
   cursor: pointer;
+}
+
+.modalDel {
+  background-color: #fff;
+  width: 200px;
+  height: 125px;
+  top: 50%;
+  left: 50%;
+  margin: -62.5px -100px;
+  position: absolute;
+  border-radius: 5px;
+}
+
+.divMensagem {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.modalMensagem {
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  color: gray;
+  justify-self: center;
+}
+
+.divButton {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+  grid-template-columns: 1fr 1fr;
+  padding: 0px 25px;
+}
+
+.modalButton {
+  padding: 5px;
+  width: 65px;
+  border-radius: 4px;
+  border-width: 2px;
+  border-color: rgba(0, 150, 255, 100%);
+  background-color: rgba(0, 150, 255, 100%);
+  color: white;
+  font-size: 16px;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  cursor: pointer;
+  justify-self: center;
 }
