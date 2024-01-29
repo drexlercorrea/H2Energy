@@ -1,26 +1,25 @@
 /* HEAD */
 const nodemailer = require("nodemailer");
-const express = require('express');
+const express = require("express");
 const app = express();
-const cors = require('cors');
-const multer = require('multer');
-const path = require('path');
+const cors = require("cors");
+const multer = require("multer");
+const path = require("path");
 const fs = require("fs");
-
 app.use(cors());
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/');
+    cb(null, "uploads/");
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname);
-  }
+  },
 });
 
 const upload = multer({ storage: storage });
 
-app.post('/enviar-email', upload.single('arquivo'), (req, res) => {
+app.post("/enviar-email", upload.single("arquivo"), (req, res) => {
   const dadosFront = req.body;
   const arquivo = req.file;
 
@@ -38,7 +37,7 @@ app.post('/enviar-email', upload.single('arquivo'), (req, res) => {
 
     const extensao = path.extname(arquivo.originalname);
     const nomedoArquivo = codigo + "_rv" + revisao + extensao;
-    const caminhoArquivo = path.resolve(__dirname, 'uploads', arquivo.filename);
+    const caminhoArquivo = path.resolve(__dirname, "uploads", arquivo.filename);
 
     let transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
@@ -49,42 +48,57 @@ app.post('/enviar-email', upload.single('arquivo'), (req, res) => {
     });
 
     const corpoEmail =
-      '<html> <b>* Mensagem automática. Não responda esse e-mail. *</b> <p>________________________________________________________________________</p> <p>Um novo projeto executivo foi cadastrado. Segue os dados abaixo:</p> <b style= "text-decoration: underline;">'
-      + nome + '</b> <li>ID: ' + id + ';</li> <li>Cidade: ' + cidade + ';</li> <li>Tipo: ' + tipo +
-      ';</li> <li>Usina: ' + usina + ';</li> <li>Código: ' + codigo + ';</li> <li>Revisão: ' + revisao +
-      ';</li> <li>Descrição: ' + descricao +
-      '.</li> <p>________________________________________________________________________</p>  <b>* DOCUMENTO EM ANEXO *</b> </html>';
+      '<html> <b>* Mensagem automática. Não responda esse e-mail. *</b> <p>________________________________________________________________________</p> <p>Um novo projeto executivo foi cadastrado. Segue os dados abaixo:</p> <b style= "text-decoration: underline;">' +
+      nome +
+      "</b> <li>ID: " +
+      id +
+      ";</li> <li>Cidade: " +
+      cidade +
+      ";</li> <li>Tipo: " +
+      tipo +
+      ";</li> <li>Usina: " +
+      usina +
+      ";</li> <li>Código: " +
+      codigo +
+      ";</li> <li>Revisão: " +
+      revisao +
+      ";</li> <li>Descrição: " +
+      descricao +
+      ".</li> <p>________________________________________________________________________</p>  <b>* DOCUMENTO EM ANEXO *</b> </html>";
 
     let info = await transporter.sendMail({
       from: "drexlervc@gmail.com",
-      to: "drexler.correa@h2energy.com.br", /* ubiratan.franco@h2energy.com.br, gabriel.silva@h2energy.com.br, luciano.massaroto@h2energy.com.br */      
+      to: "drexler.correa@h2energy.com.br" /* ubiratan.franco@h2energy.com.br, luciano.massaroto@h2energy.com.br */,
       /* cc: "", */
-      subject: 'Novo Projeto Executivo | ' + nome + ' | Status: ' + status,
-      html: corpoEmail,      
-      attachments: [{
-        filename: nomedoArquivo,
-        path: caminhoArquivo
-      }]      
+      subject: "Novo Projeto Executivo | " + nome + " | Status: " + status,
+      html: corpoEmail,
+      attachments: [
+        {
+          filename: nomedoArquivo,
+          path: caminhoArquivo,
+        },
+      ],
     });
 
     console.log("Message sent: %s", info.messageId);
 
-    fs.unlink(caminhoArquivo, (err) => {
+    /*     fs.unlink(caminhoArquivo, (err) => {
       if (err) {
         console.error("Erro ao excluir o arquivo: ", err);
       } else {
         console.log("Arquivo excluído com sucesso!");
       }
-    })
-
-  }   
+    }); */
+  }
   enviarEmail(dadosFront, arquivo)
-  .then(() => {console.log('E-mail enviado com sucesso!');})
-  .catch(console.error);
+    .then(() => {
+      console.log("E-mail enviado com sucesso!");
+    })
+    .catch(console.error);
 
   res.json("Requisição ao servidor de e-mail feita com sucesso!");
 });
 
 app.listen(3000, () => {
-  console.log('Servidor rodando na porta 3000!');
+  console.log("Servidor rodando na porta 3000!");
 });

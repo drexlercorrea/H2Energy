@@ -498,10 +498,15 @@ function enviarProjeto(
       try {
         var lNome = document.getElementById("listaNome").value;
         var lTipo = document.getElementById("listaTipo").value;
-        var ldescricao = document.getElementById("descricao").value;
+        var lDescriçao = document.getElementById("descricao").value;
         var lFolha = document.getElementById("listaFolha").value;
-        var lrevisao = "00";
+        var lRevisao = "00";
         var arquivoForm = document.getElementById("arquivo").files[0];
+        const lExtensao = document
+          .getElementById("arquivo")
+          .value.split(".")
+          .pop();
+
         var lid =
           (idpAirtable < 10 ? "00" : idpAirtable < 100 ? "0" : "") +
           idpAirtable;
@@ -578,14 +583,19 @@ function enviarProjeto(
               var resultadoNome = lNome.charAt(lNome.length - 1);
             }
 
+            var lNomedoArquivo =
+              codigoFinalEmail + "_rv" + lRevisao + "." + lExtensao;
+
             var dadosEnvio = {
               fields: {
                 id: idpAirtable,
                 nomedausina: lNome,
                 tipodeprojeto: lTipo,
-                descricao: ldescricao,
+                descricao: lDescriçao,
                 tamanhodafolha: lFolha,
-                revisao: lrevisao,
+                revisao: lRevisao,
+                codigo: codigoFinalEmail,
+                nomedoarquivo: lNomedoArquivo,
               },
             };
 
@@ -597,8 +607,8 @@ function enviarProjeto(
             dadosEmail.append("tipo", lTipo);
             dadosEmail.append("usina", resultadoNome);
             dadosEmail.append("codigo", codigoFinalEmail);
-            dadosEmail.append("revisao", lrevisao);
-            dadosEmail.append("descricao", ldescricao);
+            dadosEmail.append("revisao", lRevisao);
+            dadosEmail.append("descricao", lDescriçao);
             dadosEmail.append("arquivo", arquivoForm);
 
             var response = fetch(
@@ -690,32 +700,8 @@ function receberProjetos(idpAirtable, projetoEnviado) {
         var folhaAirtable = fieldsAirtable.tamanhodafolha;
         var revisaoAirtable = fieldsAirtable.revisao;
         var dataUsinaAirtable = fieldsAirtable.data;
-
-        var siglaNome = usinaAirtable
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f\s]/g, "")
-          .toUpperCase();
-        var siglaTipo = tipoAirtable
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f\s]/g, "")
-          .slice(0, 3)
-          .toUpperCase();
-        var mesmoProjeto = "H2-" + siglaNome + "-" + siglaTipo;
-        projetosIguais.push(mesmoProjeto);
-        var contadorProjeto = 0;
-        for (var i = 0; i < projetosIguais.length; i++) {
-          if (projetosIguais[i] === mesmoProjeto) {
-            contadorProjeto++;
-          }
-        }
-        var codigoArquivo =
-          "H2-" +
-          siglaNome +
-          "-" +
-          siglaTipo +
-          "-" +
-          (contadorProjeto < 10 ? "0" : "") +
-          contadorProjeto;
+        var codigoArquivo = fieldsAirtable.codigo;
+        var nomeArquivo = fieldsAirtable.nomedoarquivo;
 
         var folhaMaisRevisao = folhaAirtable + " | " + revisaoAirtable;
 
@@ -756,11 +742,24 @@ function receberProjetos(idpAirtable, projetoEnviado) {
         dataProjeto.innerText = dataFormatada;
         pe.appendChild(dataProjeto);
 
-        var linkProjeto = document.createElement("a");
-        linkProjeto.innerText = codigoArquivo + "_rv" + revisaoAirtable;
-        linkProjeto.setAttribute("class", "ufv");
-        linkProjeto.setAttribute("href", "#");
-        pe.appendChild(linkProjeto);
+        const currentURL = window.location.href;
+        const caminhodoArquivo =
+          currentURL.substring(0, currentURL.lastIndexOf("/") + 1) +
+          "uploads/" +
+          nomeArquivo;
+
+        var botaoProjeto = document.createElement("a");
+        botaoProjeto.setAttribute("id", "botaoProjeto");
+        botaoProjeto.setAttribute("class", "botaoProjeto");
+        botaoProjeto.setAttribute("href", caminhodoArquivo);
+        botaoProjeto.setAttribute("download", nomeArquivo);
+        pe.appendChild(botaoProjeto);
+
+        var linkProjeto = document.createElement("i");
+        linkProjeto.setAttribute("class", "fa-solid fa-file-arrow-down");
+        linkProjeto.setAttribute("id", "linkProjeto");
+        linkProjeto.setAttribute("title", "Baixar Arquivo");
+        botaoProjeto.appendChild(linkProjeto);
       }
 
       if (projetoEnviado !== 2) {

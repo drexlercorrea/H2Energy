@@ -24,7 +24,7 @@
       if (user) {
         console.log("Usuário credenciado!");
       } else {
-        window.location.href = "/login/login.html";    
+        window.location.href = "/login/login.html";
       }
     });
   </script>
@@ -138,7 +138,7 @@
         <option value="A4">
       </datalist>
       <label for="arquivo" class="enviar" id="botaoUpload" title="Arquivo do projeto">Upload</label>
-      <input type="file" name="arquivo" id="arquivo" accept=".pdf">
+      <input type="file" name="arquivo" id="arquivo">
       <button type="submit" class="enviar" title="Cadastrar o projeto"><i class="fa-solid fa-check"></i>
       </button>
     </form>
@@ -159,7 +159,7 @@
   </div>
 
   <script>
-    var formularioEnviado = ""; var fieldsAirtable = ""; var nameTagUfv = ""; var projetoEnviado = ""; 
+    var formularioEnviado = ""; var fieldsAirtable = ""; var nameTagUfv = ""; var projetoEnviado = "";
     var projetosIguais = []; var projetosIguaisContador = []; receberDados(); enviarFormulario(); 
   </script>
 </body>
