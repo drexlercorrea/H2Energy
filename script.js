@@ -88,7 +88,7 @@ function enviarFormulario() {
           {
             method: "GET",
             headers: {
-              Authorization: "Bearer keyggOsGLubPoGKDd",
+              Authorization: "Bearer pat7sOvlibq6Ui1sG.de9fc95445823fe266092367695775f1288fe1748cbbfa08287a93cf394cd4fc",
               "Content-Type": "application/json",
             },
           }
@@ -139,7 +139,7 @@ function enviarFormulario() {
               {
                 method: "POST",
                 headers: {
-                  Authorization: "Bearer keyggOsGLubPoGKDd",
+                  Authorization: "Bearer pat7sOvlibq6Ui1sG.de9fc95445823fe266092367695775f1288fe1748cbbfa08287a93cf394cd4fc",
                   "Content-Type": "application/json",
                 },
                 body: JSON.stringify(dadosEnvio),
@@ -713,9 +713,23 @@ function receberProjetos(idpAirtable, projetoEnviado) {
 
         var folhaMaisRevisao = folhaAirtable + " | " + revisaoAirtable;
 
+        var divProjeto = document.createElement("div");
+        divProjeto.setAttribute("class", "divProjeto");
+        divProjeto.setAttribute("id", "divProjeto");
+        pe.appendChild(divProjeto);
+
         var nomeUsina = document.createElement("h5");
         nomeUsina.innerText = usinaAirtable;
-        pe.appendChild(nomeUsina);
+        divProjeto.appendChild(nomeUsina);
+
+        var addRevisao = document.createElement("i");
+        addRevisao.setAttribute("class", "fa-solid fa-square-plus");
+        addRevisao.setAttribute("id", "addRevisao");
+        addRevisao.setAttribute("title", "Adicionar revisão");
+        addRevisao.addEventListener("click", function (event) {
+          revisarProjeto(codigoArquivo);
+        });
+        divProjeto.appendChild(addRevisao);
 
         var codigoProjeto = document.createElement("h5");
         codigoProjeto.innerText = codigoArquivo;
@@ -1108,4 +1122,95 @@ function deletarUFV(idpAirtable) {
       console.error("Erro ao enviar dados para o Airtable:", error);
     }
   }
+}
+
+/* ADICIONAR REVISÃO DE PROJETO */
+function revisarProjeto(codigoArquivo) {
+  var modal = document.createElement("div");
+  modal.setAttribute("class", "modal");
+  modal.setAttribute("id", "modal");
+  document.body.appendChild(modal);
+
+  var modalBox = document.createElement("div");
+  modalBox.setAttribute("class", "modalBox2");
+  modalBox.setAttribute("id", "modalBox");
+  modal.appendChild(modalBox);
+
+  var modalFechar = document.createElement("span");
+  modalFechar.setAttribute("class", "modalFechar");
+  modalFechar.setAttribute("id", "modalFechar");
+  modalFechar.innerText = "X";
+  modalFechar.setAttribute("title", "Fechar");
+  modalFechar.addEventListener("click", fecharModal);
+  modalBox.appendChild(modalFechar);
+
+  function fecharModal() {
+    var modal = document.querySelector(".modal");
+    if (modal) {
+      modal.remove();
+    }
+  }
+
+  var modalForm = document.createElement("form");
+  modalForm.setAttribute("class", "modalForm");
+  modalForm.setAttribute("id", "modalForm");
+  modalBox.appendChild(modalForm);
+
+  div1 = document.createElement("div");
+  div1.setAttribute("class", "modalDiv");
+  modalForm.appendChild(div1);
+
+  label1 = document.createElement("label");
+  label1.setAttribute("for", "modalDescriçao");
+  label1.setAttribute("class", "modalLabel");
+  label1.innerText = "Descrição: ";
+  div1.appendChild(label1);
+
+  modalDescriçao = document.createElement("input");
+  modalDescriçao.setAttribute("class", "modalInput");
+  modalDescriçao.setAttribute("id", "modalDescriçao");
+  modalDescriçao.setAttribute("name", "modalDescriçao");
+  modalDescriçao.setAttribute("type", "text");
+  modalDescriçao.setAttribute("autocomplete", "off");
+  div1.appendChild(modalDescriçao);
+
+  div2 = document.createElement("div");
+  div2.setAttribute("class", "modalDiv");
+  modalForm.appendChild(div2);
+
+  label2 = document.createElement("label");
+  label2.setAttribute("for", "modalArquivo");
+  label2.setAttribute("class", "uploadArquivo");
+  label2.setAttribute("id", "uploadArquivo");
+  label2.setAttribute("title", "Arquivo do projeto");
+  label2.innerText = "Upload";
+  div2.appendChild(label2);
+
+  modalArquivo = document.createElement("input");
+  modalArquivo.setAttribute("id", "modalArquivo");
+  modalArquivo.setAttribute("name", "modalArquivo");
+  modalArquivo.setAttribute("type", "file");
+  div2.appendChild(modalArquivo);
+
+  var modalInputArquivo = document.getElementById("modalArquivo");
+  modalInputArquivo.addEventListener("change", function () {
+    var modalArquivoSelecionado = modalInputArquivo.files[0];
+
+    if (modalArquivoSelecionado) {
+      var ua = document.getElementById("uploadArquivo");
+      ua.style.cssText = "background-color: gray; border-color: gray";
+    }
+  });
+
+  div3 = document.createElement("div");
+  div3.setAttribute("class", "modalDiv");
+  modalForm.appendChild(div3);
+
+  modalEnviar = document.createElement("button");
+  modalEnviar.setAttribute("class", "modalEnviar");
+  modalEnviar.setAttribute("id", "modalEnviar");
+  modalEnviar.setAttribute("type", "submit");
+  modalEnviar.setAttribute("title", "Enviar revisão");
+  modalEnviar.innerText = "Adicionar Revisão";
+  div3.appendChild(modalEnviar);
 }

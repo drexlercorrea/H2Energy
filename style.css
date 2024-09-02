@@ -23,6 +23,7 @@ body {
 
 .nav {
   background-color: rgba(0, 150, 255, 100%);
+  display: grid;
 }
 
 .nav a {
@@ -69,6 +70,15 @@ body {
   font-size: 80%;
 }
 
+.fa-house {
+  padding: 10px;
+  font-size: 110%;
+  color: white;
+}
+
+.home {
+  justify-self: center;
+}
 .cadastro,
 .cadastroPrancha,
 .botãoNovaprancha,
@@ -220,6 +230,15 @@ label {
   padding-top: 8px;
 }
 
+.fa-square-plus {
+  color: rgba(0, 150, 255, 100%);
+  justify-self: left;
+  align-self: start;
+  position: absolute;
+  cursor: pointer;
+  padding: 10px;
+}
+
 .modal {
   display: block;
   position: fixed;
@@ -230,7 +249,8 @@ label {
   background-color: rgba(0, 0, 0, 0.7);
 }
 
-.modalBox {
+.modalBox,
+.modalBox2 {
   background-color: #fff;
   width: 350px;
   height: 488px;
@@ -274,8 +294,8 @@ label {
   margin: 0px;
 }
 
-.modalEnviar {
-  margin-top: 5px;
+.modalEnviar,
+.uploadArquivo {
   padding: 5px;
   border-radius: 4px;
   border-width: 2px;
@@ -339,4 +359,18 @@ label {
   border-width: 1px;
   border-color: white;
   text-align: center;
+}
+
+.divProjeto {
+  display: grid;
+}
+
+.uploadArquivo {
+  text-align: center;
+}
+
+.modalBox2 {
+  width: 350px;
+  height: 244px;
+  margin: -122px -175px;
 }
